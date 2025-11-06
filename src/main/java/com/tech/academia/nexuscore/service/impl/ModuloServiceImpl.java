@@ -2,6 +2,7 @@ package com.tech.academia.nexuscore.service.impl;
 
 import com.tech.academia.nexuscore.dto.ModuloCreateRequestDTO;
 import com.tech.academia.nexuscore.dto.ModuloResponseDTO;
+import com.tech.academia.nexuscore.dto.ModuloUpdateRequestDTO;
 import com.tech.academia.nexuscore.exception.CursoNoEncontradoException;
 import com.tech.academia.nexuscore.exception.ModuloNoEncontradoException;
 import com.tech.academia.nexuscore.mapper.ModuloMapper;
@@ -59,7 +60,18 @@ public class ModuloServiceImpl {
     return moduloMapper.moduloToResponseDto(moduloGuardado);
   }
 
-  // actualizarModulo
+  // Actualizar modulo
+  public ModuloResponseDTO actualizarModulo(Long id, ModuloUpdateRequestDTO updateDto) {
+
+    Modulo modulo = moduloRepository.findById(id).orElseThrow(() ->
+        new ModuloNoEncontradoException(id));
+
+    moduloMapper.actualizarModulo(modulo, updateDto);
+
+    return moduloMapper.moduloToResponseDto(
+      moduloRepository.save(modulo)
+    );
+  }
 
   // eliminarModulo
 

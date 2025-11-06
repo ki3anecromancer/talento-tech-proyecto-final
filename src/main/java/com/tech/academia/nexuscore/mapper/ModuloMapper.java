@@ -2,6 +2,7 @@ package com.tech.academia.nexuscore.mapper;
 
 import com.tech.academia.nexuscore.dto.ModuloCreateRequestDTO;
 import com.tech.academia.nexuscore.dto.ModuloResponseDTO;
+import com.tech.academia.nexuscore.dto.ModuloUpdateRequestDTO;
 import com.tech.academia.nexuscore.model.Curso;
 import com.tech.academia.nexuscore.model.Modulo;
 import org.springframework.stereotype.Component;
@@ -29,5 +30,12 @@ public class ModuloMapper {
         curso,
         null
     );
+  }
+
+  // Actualizar Modulo
+  public void actualizarModulo(Modulo modulo, ModuloUpdateRequestDTO updateDto) {
+
+    modulo.setTitulo(updateDto.titulo());
+    modulo.setOrden(updateDto.orden());
   }
 }
