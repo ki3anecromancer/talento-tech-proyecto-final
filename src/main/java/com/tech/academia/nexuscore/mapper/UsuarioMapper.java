@@ -22,6 +22,7 @@ public class UsuarioMapper {
         dto.nombre(),
         dto.apellido(),
         LocalDateTime.now(),
+        null,
         null
     );
   }

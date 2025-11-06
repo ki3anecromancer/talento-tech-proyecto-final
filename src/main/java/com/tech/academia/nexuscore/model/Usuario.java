@@ -46,4 +46,7 @@ public class Usuario {
 
   @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<Inscripcion> inscripciones = new HashSet<>();
+
+  @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+  private Set<ProgresoContenido> progresoContenidos;
 }

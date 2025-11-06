@@ -94,7 +94,21 @@ public class InscripcionServiceImpl {
     );
   }
 
-  // actualizarProgreso
+  // Actualizar progreso
+  public InscripcionResponseDTO actualizarProgreso(Long idUsuario, Long idCurso) {
+
+    Usuario usuario = usuarioRepository.findById(idUsuario).orElseThrow(() ->
+        new UsuarioNoEncontradoException(idUsuario));
+
+    Curso curso = cursoRepository.findById(idCurso).orElseThrow(() ->
+        new CursoNoEncontradoException(idCurso));
+
+    Inscripcion inscripcion = inscripcionRepository.findByUsuarioAndCurso(usuario, curso).orElseThrow(() ->
+        new InscripcionNoEncontradaException(usuario, curso));
+
+    int totalModulos = curso.getModulos().size();
+
+  }
 
   // eliminarInscripcion
 }

@@ -1,6 +1,7 @@
 package com.tech.academia.nexuscore.model;
 
 import com.tech.academia.nexuscore.model.enums.TipoContenido;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -11,7 +12,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -43,4 +46,7 @@ public class Contenido {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "modulo_id", nullable = false)
   private Modulo modulo;
+
+  @OneToMany(mappedBy = "contenido", cascade = CascadeType.ALL, orphanRemoval = true)
+  private Set<ProgresoContenido> progresoContenidos;
 }
