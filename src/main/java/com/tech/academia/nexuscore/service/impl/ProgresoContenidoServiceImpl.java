@@ -11,11 +11,12 @@ import com.tech.academia.nexuscore.model.Usuario;
 import com.tech.academia.nexuscore.repository.ContenidoRepository;
 import com.tech.academia.nexuscore.repository.ProgresoContenidoRepository;
 import com.tech.academia.nexuscore.repository.UsuarioRepository;
+import com.tech.academia.nexuscore.service.ProgresoContenidoService;
 import java.time.LocalDateTime;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ProgresoContenidoServiceImpl {
+public class ProgresoContenidoServiceImpl implements ProgresoContenidoService {
 
   private final ProgresoContenidoRepository progresoContenidoRepository;
   private final UsuarioRepository usuarioRepository;
@@ -35,6 +36,7 @@ public class ProgresoContenidoServiceImpl {
   }
 
   // Marcar contenido como completado
+  @Override
   public ProgresoContenidoResponseDTO marcarContenidoComoCompletado(Long idUsuario, Long idContenido) {
 
     Usuario usuario = usuarioRepository.findById(idUsuario).orElseThrow(() ->

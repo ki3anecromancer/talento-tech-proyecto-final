@@ -21,12 +21,13 @@ import com.tech.academia.nexuscore.repository.CursoRepository;
 import com.tech.academia.nexuscore.repository.InscripcionRepository;
 import com.tech.academia.nexuscore.repository.ProgresoContenidoRepository;
 import com.tech.academia.nexuscore.repository.UsuarioRepository;
+import com.tech.academia.nexuscore.service.InscripcionService;
 import java.util.HashSet;
 import java.util.Set;
 import org.springframework.stereotype.Service;
 
 @Service
-public class InscripcionServiceImpl {
+public class InscripcionServiceImpl implements InscripcionService {
 
   private final InscripcionRepository inscripcionRepository;
   private final UsuarioRepository usuarioRepository;
@@ -55,6 +56,7 @@ public class InscripcionServiceImpl {
   }
 
   // Inscribir usuario a un curso
+  @Override
   public InscripcionResponseDTO inscribirUsuarioACurso(InscripcionRequestDTO requestDTO) {
 
     Usuario usuario = usuarioRepository.findById(requestDTO.usuarioId()).orElseThrow(() ->
@@ -101,6 +103,7 @@ public class InscripcionServiceImpl {
   }
 
   // Obtener inscripcion por ID
+  @Override
   public InscripcionResponseDTO obtenerInscripcionPorId(Long id) {
 
     Inscripcion inscripcion = inscripcionRepository.findById(id).orElseThrow(() ->
@@ -114,6 +117,7 @@ public class InscripcionServiceImpl {
   }
 
   // Obtener los cursos inscritos de usuario
+  @Override
   public InscripcionCursosResponseDTO obtenerCursosInscritosDeUsuario(Long idUsuario) {
 
     Usuario usuario = usuarioRepository.findById(idUsuario).orElseThrow(() ->
@@ -128,6 +132,7 @@ public class InscripcionServiceImpl {
   }
 
   // Actualizar progreso
+  @Override
   public InscripcionResponseDTO actualizarProgreso(Long idUsuario, Long idCurso) {
 
     Usuario usuario = usuarioRepository.findById(idUsuario).orElseThrow(() ->
@@ -168,5 +173,13 @@ public class InscripcionServiceImpl {
     );
   }
 
-  // eliminarInscripcion
+  // Eliminar inscripcion
+  @Override
+  public void eliminarInscripcion(Long id) {
+
+    Inscripcion inscripcion = inscripcionRepository.findById(id).orElseThrow(() ->
+        new InscripcionNoEncontradaException(id));
+
+    inscripcionRepository.delete(inscripcion);
+  }
 }
