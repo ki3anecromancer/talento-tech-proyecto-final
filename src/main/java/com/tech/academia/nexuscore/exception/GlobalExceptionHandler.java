@@ -112,4 +112,17 @@ public class GlobalExceptionHandler {
         .status(HttpStatus.NOT_FOUND)
         .body(responseDTO);
   }
+
+  @ExceptionHandler(ModuloNoEncontradoException.class)
+  public ResponseEntity<ErrorResponseDTO> handleModuloNoEncontrado(ModuloNoEncontradoException ex) {
+
+    ErrorResponseDTO responseDTO = new ErrorResponseDTO(
+        HttpStatus.NOT_FOUND,
+        ex.getMessage()
+    );
+
+    return ResponseEntity
+        .status(HttpStatus.NOT_FOUND)
+        .body(responseDTO);
+  }
 }

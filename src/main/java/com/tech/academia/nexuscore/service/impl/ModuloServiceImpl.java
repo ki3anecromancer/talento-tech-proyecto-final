@@ -1,11 +1,11 @@
 package com.tech.academia.nexuscore.service.impl;
 
-import com.tech.academia.nexuscore.dto.CursoResponseDTO;
 import com.tech.academia.nexuscore.dto.ModuloResponseDTO;
 import com.tech.academia.nexuscore.exception.CursoNoEncontradoException;
-import com.tech.academia.nexuscore.mapper.CursoMapper;
+import com.tech.academia.nexuscore.exception.ModuloNoEncontradoException;
 import com.tech.academia.nexuscore.mapper.ModuloMapper;
 import com.tech.academia.nexuscore.model.Curso;
+import com.tech.academia.nexuscore.model.Modulo;
 import com.tech.academia.nexuscore.repository.CursoRepository;
 import com.tech.academia.nexuscore.repository.ModuloRepository;
 import java.util.Set;
@@ -40,7 +40,14 @@ public class ModuloServiceImpl {
         .collect(Collectors.toSet());
   }
 
-  // obtenerModuloPorId
+  // Obtener modulo por ID
+  public ModuloResponseDTO obtenerModuloPorId(Long id) {
+
+    Modulo modulo = moduloRepository.findById(id).orElseThrow(() ->
+        new ModuloNoEncontradoException(id));
+
+    return moduloMapper.moduloToResponseDto(modulo);
+  }
 
   // crearModuloEnCurso
 
