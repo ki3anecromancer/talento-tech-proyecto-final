@@ -1,6 +1,8 @@
 package com.tech.academia.nexuscore.mapper;
 
+import com.tech.academia.nexuscore.dto.ModuloCreateRequestDTO;
 import com.tech.academia.nexuscore.dto.ModuloResponseDTO;
+import com.tech.academia.nexuscore.model.Curso;
 import com.tech.academia.nexuscore.model.Modulo;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +16,18 @@ public class ModuloMapper {
         modulo.getId(),
         modulo.getTitulo(),
         modulo.getOrden()
+    );
+  }
+
+  // ModuloCreateRequestDTO -> Modulo
+  public Modulo createDtoToModulo(ModuloCreateRequestDTO createDto, Curso curso) {
+
+    return new Modulo(
+        null,
+        createDto.titulo(),
+        createDto.orden(),
+        curso,
+        null
     );
   }
 }
