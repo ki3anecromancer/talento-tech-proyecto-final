@@ -99,4 +99,17 @@ public class GlobalExceptionHandler {
         .status(HttpStatus.NOT_FOUND)
         .body(responseDTO);
   }
+
+  @ExceptionHandler(ProgresoContenidoNoInicializadoException.class)
+  public ResponseEntity<ErrorResponseDTO> handleProgresoContenidoNoInicializado(ProgresoContenidoNoInicializadoException ex) {
+
+    ErrorResponseDTO responseDTO = new ErrorResponseDTO(
+        HttpStatus.NOT_FOUND,
+        ex.getMessage()
+    );
+
+    return ResponseEntity
+        .status(HttpStatus.NOT_FOUND)
+        .body(responseDTO);
+  }
 }

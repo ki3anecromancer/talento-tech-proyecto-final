@@ -5,6 +5,7 @@ import com.tech.academia.nexuscore.dto.InscripcionRequestDTO;
 import com.tech.academia.nexuscore.dto.InscripcionResponseDTO;
 import com.tech.academia.nexuscore.exception.CursoNoEncontradoException;
 import com.tech.academia.nexuscore.exception.InscripcionNoEncontradaException;
+import com.tech.academia.nexuscore.exception.ProgresoContenidoNoEncontradoException;
 import com.tech.academia.nexuscore.exception.UsuarioNoEncontradoException;
 import com.tech.academia.nexuscore.exception.UsuarioYaInscriptoException;
 import com.tech.academia.nexuscore.mapper.CursoMapper;
@@ -138,8 +139,33 @@ public class InscripcionServiceImpl {
     Inscripcion inscripcion = inscripcionRepository.findByUsuarioAndCurso(usuario, curso).orElseThrow(() ->
         new InscripcionNoEncontradaException(usuario, curso));
 
-    int totalModulos = curso.getModulos().size();
+    int totalContenido = 0;
+    int totalContenidoCompletado = 0;
 
+    for (Modulo modulo : curso.getModulos()) {
+
+      for (Contenido contenido : modulo.getContenidos()) {
+
+        ProgresoContenido progreso = progresoContenidoRepository.findByUsuarioAndContenido(usuario, contenido)
+            .orElseThrow(() -> new ProgresoContenidoNoEncontradoException(usuario, contenido));
+
+        totalContenido++;
+
+        if (progreso.getCompletado()) {
+          totalContenidoCompletado++;
+        }
+      }
+    }
+
+    Double progreso = totalContenidoCompletado * 100.0 / totalContenido;
+
+    inscripcion.setProgreso(progreso);
+
+    return inscripcionMapper.inscripcionToResponseDto(
+        inscripcionRepository.save(inscripcion),
+        usuarioMapper.usuarioToReferenceDto(usuario),
+        cursoMapper.cursoToReferenceDto(curso)
+    );
   }
 
   // eliminarInscripcion
