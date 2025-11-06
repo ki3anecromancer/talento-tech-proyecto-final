@@ -10,12 +10,17 @@ import com.tech.academia.nexuscore.exception.UsuarioYaInscriptoException;
 import com.tech.academia.nexuscore.mapper.CursoMapper;
 import com.tech.academia.nexuscore.mapper.InscripcionMapper;
 import com.tech.academia.nexuscore.mapper.UsuarioMapper;
+import com.tech.academia.nexuscore.model.Contenido;
 import com.tech.academia.nexuscore.model.Curso;
 import com.tech.academia.nexuscore.model.Inscripcion;
+import com.tech.academia.nexuscore.model.Modulo;
+import com.tech.academia.nexuscore.model.ProgresoContenido;
 import com.tech.academia.nexuscore.model.Usuario;
 import com.tech.academia.nexuscore.repository.CursoRepository;
 import com.tech.academia.nexuscore.repository.InscripcionRepository;
+import com.tech.academia.nexuscore.repository.ProgresoContenidoRepository;
 import com.tech.academia.nexuscore.repository.UsuarioRepository;
+import java.util.HashSet;
 import java.util.Set;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +33,7 @@ public class InscripcionServiceImpl {
   private final InscripcionMapper inscripcionMapper;
   private final UsuarioMapper usuarioMapper;
   private final CursoMapper cursoMapper;
+  private final ProgresoContenidoRepository progresoContenidoRepository;
 
   public InscripcionServiceImpl(
       InscripcionRepository inscripcionRepository,
@@ -35,7 +41,8 @@ public class InscripcionServiceImpl {
       CursoRepository cursoRepository,
       InscripcionMapper inscripcionMapper,
       UsuarioMapper usuarioMapper,
-      CursoMapper cursoMapper) {
+      CursoMapper cursoMapper,
+      ProgresoContenidoRepository progresoContenidoRepository) {
 
     this.inscripcionRepository = inscripcionRepository;
     this.usuarioRepository = usuarioRepository;
@@ -43,6 +50,7 @@ public class InscripcionServiceImpl {
     this.inscripcionMapper = inscripcionMapper;
     this.usuarioMapper = usuarioMapper;
     this.cursoMapper = cursoMapper;
+    this.progresoContenidoRepository = progresoContenidoRepository;
   }
 
   // Inscribir usuario a un curso
@@ -59,6 +67,30 @@ public class InscripcionServiceImpl {
     }
 
     Inscripcion inscripcion = inscripcionMapper.usuarioYCursoToInscripcion(usuario, curso);
+
+    Set<Modulo> modulos = curso.getModulos();
+
+    Set<ProgresoContenido> nuevosProgresos = new HashSet<>();
+
+    for (Modulo modulo : modulos) {
+
+      Set<Contenido> contenidos = modulo.getContenidos();
+
+      for (Contenido contenido : contenidos) {
+
+        ProgresoContenido progresoContenido = new ProgresoContenido(
+            null,
+            usuario,
+            contenido,
+            Boolean.FALSE,
+            null
+        );
+
+        nuevosProgresos.add(progresoContenido);
+      }
+    }
+
+    progresoContenidoRepository.saveAll(nuevosProgresos);
 
     return inscripcionMapper.inscripcionToResponseDto(
         inscripcionRepository.save(inscripcion),
