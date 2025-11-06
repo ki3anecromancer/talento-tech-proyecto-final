@@ -86,4 +86,17 @@ public class GlobalExceptionHandler {
         .status(HttpStatus.NOT_FOUND)
         .body(responseDTO);
   }
+
+  @ExceptionHandler(ProgresoContenidoNoEncontradoException.class)
+  public ResponseEntity<ErrorResponseDTO> handleProgresoContenidoNoEncontrado(ProgresoContenidoNoEncontradoException ex) {
+
+    ErrorResponseDTO responseDTO = new ErrorResponseDTO(
+        HttpStatus.NOT_FOUND,
+        ex.getMessage()
+    );
+
+    return ResponseEntity
+        .status(HttpStatus.NOT_FOUND)
+        .body(responseDTO);
+  }
 }
