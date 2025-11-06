@@ -10,6 +10,7 @@ import com.tech.academia.nexuscore.model.Curso;
 import com.tech.academia.nexuscore.model.Modulo;
 import com.tech.academia.nexuscore.repository.CursoRepository;
 import com.tech.academia.nexuscore.repository.ModuloRepository;
+import com.tech.academia.nexuscore.service.ModuloService;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -17,13 +18,14 @@ import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
-public class ModuloServiceImpl {
+public class ModuloServiceImpl implements ModuloService {
 
   private final ModuloRepository moduloRepository;
   private final CursoRepository cursoRepository;
   private final ModuloMapper moduloMapper;
 
   // Obtener modulos por curso
+  @Override
   public Set<ModuloResponseDTO> obtenerModulosPorcurso(Long idCurso) {
 
     Curso curso = cursoRepository.findById(idCurso).orElseThrow(() ->
@@ -35,6 +37,7 @@ public class ModuloServiceImpl {
   }
 
   // Obtener modulo por ID
+  @Override
   public ModuloResponseDTO obtenerModuloPorId(Long id) {
 
     Modulo modulo = moduloRepository.findById(id).orElseThrow(() ->
@@ -44,6 +47,7 @@ public class ModuloServiceImpl {
   }
 
   // Crear modulo en curso
+  @Override
   public ModuloResponseDTO crearModuloEnCurso(ModuloCreateRequestDTO requestDto) {
 
     Curso curso = cursoRepository.findById(requestDto.idCurso()).orElseThrow(() ->
@@ -61,6 +65,7 @@ public class ModuloServiceImpl {
   }
 
   // Actualizar modulo
+  @Override
   public ModuloResponseDTO actualizarModulo(Long id, ModuloUpdateRequestDTO updateDto) {
 
     Modulo modulo = moduloRepository.findById(id).orElseThrow(() ->
@@ -73,7 +78,14 @@ public class ModuloServiceImpl {
     );
   }
 
-  // eliminarModulo
+  // Eliminar modulo
+  @Override
+  public void eliminarModulo(Long id) {
 
+    Modulo modulo = moduloRepository.findById(id).orElseThrow(() ->
+        new ModuloNoEncontradoException(id));
+
+    moduloRepository.delete(modulo);
+  }
 
 }
