@@ -1,5 +1,6 @@
 package com.tech.academia.nexuscore.service.impl;
 
+import com.tech.academia.nexuscore.dto.InscripcionCursosResponseDTO;
 import com.tech.academia.nexuscore.dto.InscripcionRequestDTO;
 import com.tech.academia.nexuscore.dto.InscripcionResponseDTO;
 import com.tech.academia.nexuscore.exception.CursoNoEncontradoException;
@@ -15,6 +16,7 @@ import com.tech.academia.nexuscore.model.Usuario;
 import com.tech.academia.nexuscore.repository.CursoRepository;
 import com.tech.academia.nexuscore.repository.InscripcionRepository;
 import com.tech.academia.nexuscore.repository.UsuarioRepository;
+import java.util.Set;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -78,7 +80,19 @@ public class InscripcionServiceImpl {
     );
   }
 
-  // obtenerCursosInscritosDeUsuario
+  // Obtener los cursos inscritos de usuario
+  public InscripcionCursosResponseDTO obtenerCursosInscritosDeUsuario(Long idUsuario) {
+
+    Usuario usuario = usuarioRepository.findById(idUsuario).orElseThrow(() ->
+        new UsuarioNoEncontradoException(idUsuario));
+
+    Set<Inscripcion> inscripciones = inscripcionRepository.findAllByUsuario(usuario);
+
+    return inscripcionMapper.inscripcionesToCursosResponseDto(
+        usuarioMapper.usuarioToReferenceDto(usuario),
+        inscripciones
+    );
+  }
 
   // actualizarProgreso
 

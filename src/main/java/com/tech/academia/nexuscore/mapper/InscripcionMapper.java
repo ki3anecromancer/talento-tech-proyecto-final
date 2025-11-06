@@ -2,6 +2,7 @@ package com.tech.academia.nexuscore.mapper;
 
 import com.tech.academia.nexuscore.dto.CursoReferenceDTO;
 import com.tech.academia.nexuscore.dto.CursoResponseDTO;
+import com.tech.academia.nexuscore.dto.InscripcionCursosResponseDTO;
 import com.tech.academia.nexuscore.dto.InscripcionResponseDTO;
 import com.tech.academia.nexuscore.dto.UsuarioReferenceDTO;
 import com.tech.academia.nexuscore.dto.UsuarioResponseDTO;
@@ -9,6 +10,9 @@ import com.tech.academia.nexuscore.model.Curso;
 import com.tech.academia.nexuscore.model.Inscripcion;
 import com.tech.academia.nexuscore.model.Usuario;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -37,6 +41,21 @@ public class InscripcionMapper {
         inscripcion.getProgreso(),
         usuarioDto,
         cursoDto
+    );
+  }
+
+  public InscripcionCursosResponseDTO inscripcionesToCursosResponseDto(UsuarioReferenceDTO usuarioDto, Set<Inscripcion> inscripciones) {
+
+    Set<CursoReferenceDTO> cursos = inscripciones.stream()
+        .map(inscripcion -> new CursoReferenceDTO(
+            inscripcion.getCurso().getId(),
+            inscripcion.getCurso().getTitulo()
+            ))
+        .collect(Collectors.toSet());
+
+    return new InscripcionCursosResponseDTO(
+        usuarioDto,
+        cursos
     );
   }
 }
