@@ -13,8 +13,10 @@ import com.tech.academia.nexuscore.repository.ProgresoContenidoRepository;
 import com.tech.academia.nexuscore.repository.UsuarioRepository;
 import com.tech.academia.nexuscore.service.ProgresoContenidoService;
 import java.time.LocalDateTime;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+@RequiredArgsConstructor
 @Service
 public class ProgresoContenidoServiceImpl implements ProgresoContenidoService {
 
@@ -22,18 +24,6 @@ public class ProgresoContenidoServiceImpl implements ProgresoContenidoService {
   private final UsuarioRepository usuarioRepository;
   private final ContenidoRepository contenidoRepository;
   private final ProgresoContenidoMapper progresoContenidoMapper;
-
-  public ProgresoContenidoServiceImpl(
-      ProgresoContenidoRepository progresoContenidoRepository,
-      UsuarioRepository usuarioRepository,
-      ContenidoRepository contenidoRepository,
-      ProgresoContenidoMapper progresoContenidoMapper) {
-
-    this.progresoContenidoRepository = progresoContenidoRepository;
-    this.usuarioRepository = usuarioRepository;
-    this.contenidoRepository = contenidoRepository;
-    this.progresoContenidoMapper = progresoContenidoMapper;
-  }
 
   // Marcar contenido como completado
   @Override

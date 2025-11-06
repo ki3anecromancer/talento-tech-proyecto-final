@@ -24,8 +24,10 @@ import com.tech.academia.nexuscore.repository.UsuarioRepository;
 import com.tech.academia.nexuscore.service.InscripcionService;
 import java.util.HashSet;
 import java.util.Set;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+@RequiredArgsConstructor
 @Service
 public class InscripcionServiceImpl implements InscripcionService {
 
@@ -36,24 +38,6 @@ public class InscripcionServiceImpl implements InscripcionService {
   private final UsuarioMapper usuarioMapper;
   private final CursoMapper cursoMapper;
   private final ProgresoContenidoRepository progresoContenidoRepository;
-
-  public InscripcionServiceImpl(
-      InscripcionRepository inscripcionRepository,
-      UsuarioRepository usuarioRepository,
-      CursoRepository cursoRepository,
-      InscripcionMapper inscripcionMapper,
-      UsuarioMapper usuarioMapper,
-      CursoMapper cursoMapper,
-      ProgresoContenidoRepository progresoContenidoRepository) {
-
-    this.inscripcionRepository = inscripcionRepository;
-    this.usuarioRepository = usuarioRepository;
-    this.cursoRepository = cursoRepository;
-    this.inscripcionMapper = inscripcionMapper;
-    this.usuarioMapper = usuarioMapper;
-    this.cursoMapper = cursoMapper;
-    this.progresoContenidoRepository = progresoContenidoRepository;
-  }
 
   // Inscribir usuario a un curso
   @Override

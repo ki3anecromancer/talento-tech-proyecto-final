@@ -12,25 +12,17 @@ import com.tech.academia.nexuscore.model.Usuario;
 import com.tech.academia.nexuscore.repository.UsuarioRepository;
 import com.tech.academia.nexuscore.service.UsuarioService;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@RequiredArgsConstructor
 @Service
 public class UsuarioServiceImpl implements UsuarioService {
 
   private final UsuarioRepository usuarioRepository;
   private final UsuarioMapper usuarioMapper;
   private final PasswordEncoder passwordEncoder;
-
-  public UsuarioServiceImpl(
-      UsuarioRepository usuarioRepository,
-      UsuarioMapper usuarioMapper,
-      PasswordEncoder passwordEncoder) {
-
-    this.usuarioRepository = usuarioRepository;
-    this.usuarioMapper = usuarioMapper;
-    this.passwordEncoder = passwordEncoder;
-  }
 
   // Obtener todos los usuarios
   @Override

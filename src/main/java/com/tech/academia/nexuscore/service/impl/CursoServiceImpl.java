@@ -9,21 +9,15 @@ import com.tech.academia.nexuscore.model.Curso;
 import com.tech.academia.nexuscore.repository.CursoRepository;
 import com.tech.academia.nexuscore.service.CursoService;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+@RequiredArgsConstructor
 @Service
 public class CursoServiceImpl implements CursoService {
 
   private final CursoRepository cursoRepository;
   private final CursoMapper cursoMapper;
-
-  public CursoServiceImpl(
-      CursoRepository cursoRepository,
-      CursoMapper cursoMapper) {
-
-    this.cursoRepository = cursoRepository;
-    this.cursoMapper = cursoMapper;
-  }
 
   // Obtener todos los cursos
   @Override
