@@ -2,7 +2,6 @@ package com.tech.academia.nexuscore.controller;
 
 import com.tech.academia.nexuscore.dto.ModuloCreateRequestDTO;
 import com.tech.academia.nexuscore.dto.ModuloResponseDTO;
-import com.tech.academia.nexuscore.service.CursoService;
 import com.tech.academia.nexuscore.service.ModuloService;
 import jakarta.validation.Valid;
 import java.util.Set;
