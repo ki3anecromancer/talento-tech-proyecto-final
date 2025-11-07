@@ -1,7 +1,6 @@
 package com.tech.academia.nexuscore.service.impl;
 
 import com.tech.academia.nexuscore.dto.InscripcionCursosResponseDTO;
-import com.tech.academia.nexuscore.dto.InscripcionRequestDTO;
 import com.tech.academia.nexuscore.dto.InscripcionResponseDTO;
 import com.tech.academia.nexuscore.exception.CursoNoEncontradoException;
 import com.tech.academia.nexuscore.exception.InscripcionNoEncontradaException;
@@ -41,13 +40,13 @@ public class InscripcionServiceImpl implements InscripcionService {
 
   // Inscribir usuario a un curso
   @Override
-  public InscripcionResponseDTO inscribirUsuarioACurso(InscripcionRequestDTO requestDTO) {
+  public InscripcionResponseDTO inscribirUsuarioACurso(Long idUsuario, Long idCurso) {
 
-    Usuario usuario = usuarioRepository.findById(requestDTO.usuarioId()).orElseThrow(() ->
-        new UsuarioNoEncontradoException(requestDTO.usuarioId()));
+    Usuario usuario = usuarioRepository.findById(idUsuario).orElseThrow(() ->
+        new UsuarioNoEncontradoException(idUsuario));
 
-    Curso curso = cursoRepository.findById(requestDTO.cursoId()).orElseThrow(() ->
-        new CursoNoEncontradoException(requestDTO.cursoId()));
+    Curso curso = cursoRepository.findById(idCurso).orElseThrow(() ->
+        new CursoNoEncontradoException(idCurso));
 
     if (inscripcionRepository.existsByUsuarioAndCurso(usuario, curso)) {
       throw new UsuarioYaInscriptoException(usuario.getNombreUsuario(), curso.getTitulo());

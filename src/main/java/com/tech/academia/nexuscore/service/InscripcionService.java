@@ -1,13 +1,12 @@
 package com.tech.academia.nexuscore.service;
 
 import com.tech.academia.nexuscore.dto.InscripcionCursosResponseDTO;
-import com.tech.academia.nexuscore.dto.InscripcionRequestDTO;
 import com.tech.academia.nexuscore.dto.InscripcionResponseDTO;
 
 public interface InscripcionService {
 
   // Inscribir usuario a un curso
-  InscripcionResponseDTO inscribirUsuarioACurso(InscripcionRequestDTO requestDTO);
+  InscripcionResponseDTO inscribirUsuarioACurso(Long idUsuario, Long idCurso);
 
   // Obtener inscripcion por ID
   InscripcionResponseDTO obtenerInscripcionPorId(Long id);
