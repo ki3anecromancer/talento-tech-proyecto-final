@@ -11,6 +11,7 @@ import com.tech.academia.nexuscore.model.Contenido;
 import com.tech.academia.nexuscore.model.Modulo;
 import com.tech.academia.nexuscore.repository.ContenidoRepository;
 import com.tech.academia.nexuscore.repository.ModuloRepository;
+import com.tech.academia.nexuscore.service.ContenidoService;
 import com.tech.academia.nexuscore.validation.ContenidoValidator;
 import java.util.List;
 import java.util.Set;
@@ -20,7 +21,7 @@ import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
-public class ContenidoServiceImpl {
+public class ContenidoServiceImpl implements ContenidoService {
 
   private final ContenidoRepository contenidoRepository;
   private final ModuloRepository moduloRepository;
@@ -28,6 +29,7 @@ public class ContenidoServiceImpl {
   private final ContenidoValidator contenidoValidator;
 
   // Crear contenido en modulo
+  @Override
   public ContenidoResponseDTO crearContenidoEnModulo(ContenidoCreateRequestDTO createDto) {
 
     Modulo modulo = moduloRepository.findById(createDto.idModulo()).orElseThrow(() ->
@@ -46,6 +48,7 @@ public class ContenidoServiceImpl {
   }
 
   // Obtener contenido por ID
+  @Override
   public ContenidoResponseDTO obtenerContenidoPorId(Long id) {
 
     Contenido contenido = contenidoRepository.findById(id).orElseThrow(() ->
@@ -55,6 +58,7 @@ public class ContenidoServiceImpl {
   }
 
   // Actualizar contenido
+  @Override
   public ContenidoResponseDTO actualizarContenido(Long id, ContenidoUpdateRequestDTO updateDto) {
 
     Contenido contenido = contenidoRepository.findById(id).orElseThrow(() ->
@@ -70,6 +74,7 @@ public class ContenidoServiceImpl {
   }
 
   // Obtener contenidos por modulo
+  @Override
   public Set<ContenidoResponseDTO> obtenerContenidosPorModulo(Long idModulo) {
 
     Modulo modulo = moduloRepository.findById(idModulo).orElseThrow(() ->
@@ -81,6 +86,7 @@ public class ContenidoServiceImpl {
   }
 
   // Eliminar contenido
+  @Override
   public void eliminarContenido(Long id) {
 
     Contenido contenido = contenidoRepository.findById(id).orElseThrow(() ->
