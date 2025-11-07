@@ -1,5 +1,8 @@
 package com.tech.academia.nexuscore.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,6 +19,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -33,10 +37,12 @@ public class Modulo {
   @Column(nullable = false)
   private Integer orden;
 
+  @JsonBackReference
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "curso_id", nullable = false)
   private Curso curso;
 
+  @JsonManagedReference
   @OneToMany(mappedBy = "modulo", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<Contenido> contenidos;
 }

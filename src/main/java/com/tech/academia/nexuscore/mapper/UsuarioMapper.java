@@ -5,7 +5,10 @@ import com.tech.academia.nexuscore.dto.UsuarioReferenceDTO;
 import com.tech.academia.nexuscore.dto.UsuarioResponseDTO;
 import com.tech.academia.nexuscore.dto.UsuarioUpdateRequestDTO;
 import com.tech.academia.nexuscore.model.Usuario;
+import com.tech.academia.nexuscore.model.enums.Rol;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -13,6 +16,9 @@ public class UsuarioMapper {
 
   // UsuarioCreateRequestDTO -> Usuario
   public Usuario createDtoToUsuario(UsuarioCreateRequestDTO dto) {
+
+    Set<Rol> roles = new HashSet<>();
+    roles.add(Rol.USER);
 
     return new Usuario(
         null,
@@ -23,7 +29,8 @@ public class UsuarioMapper {
         dto.apellido(),
         LocalDateTime.now(),
         null,
-        null
+        null,
+        roles
     );
   }
 

@@ -1,5 +1,7 @@
 package com.tech.academia.nexuscore.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.tech.academia.nexuscore.model.enums.Rol;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
@@ -21,6 +23,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -50,9 +53,11 @@ public class Usuario {
   @Column(name = "fecha_creacion", nullable = false)
   private LocalDateTime fechaCreacion;
 
+  @JsonManagedReference
   @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<Inscripcion> inscripciones = new HashSet<>();
 
+  @JsonManagedReference
   @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<ProgresoContenido> progresoContenidos;
 
