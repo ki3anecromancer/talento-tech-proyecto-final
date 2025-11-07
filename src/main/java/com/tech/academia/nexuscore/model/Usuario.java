@@ -1,11 +1,17 @@
 package com.tech.academia.nexuscore.model;
 
+import com.tech.academia.nexuscore.model.enums.Rol;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
@@ -49,4 +55,9 @@ public class Usuario {
 
   @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<ProgresoContenido> progresoContenidos;
+
+  @ElementCollection(targetClass = Rol.class)
+  @CollectionTable(name = "usuario_rol", joinColumns = @JoinColumn(name = "usuario_id"))
+  @Enumerated(EnumType.STRING)
+  private Set<Rol> roles;
 }
