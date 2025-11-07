@@ -1,6 +1,7 @@
 package com.tech.academia.nexuscore.service.impl;
 
 import com.tech.academia.nexuscore.dto.ProgresoContenidoResponseDTO;
+import com.tech.academia.nexuscore.exception.ContenidoNoEncontradoException;
 import com.tech.academia.nexuscore.exception.CursoNoEncontradoException;
 import com.tech.academia.nexuscore.exception.ProgresoContenidoNoEncontradoException;
 import com.tech.academia.nexuscore.exception.UsuarioNoEncontradoException;
@@ -33,7 +34,7 @@ public class ProgresoContenidoServiceImpl implements ProgresoContenidoService {
         new UsuarioNoEncontradoException(idUsuario));
 
     Contenido contenido = contenidoRepository.findById(idContenido).orElseThrow(() ->
-        new CursoNoEncontradoException(idContenido));
+        new ContenidoNoEncontradoException(idContenido));
 
     ProgresoContenido progresoContenido = progresoContenidoRepository.findByUsuarioAndContenido(usuario, contenido)
         .orElseThrow(() -> new ProgresoContenidoNoEncontradoException(usuario, contenido));

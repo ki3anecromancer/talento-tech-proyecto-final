@@ -73,5 +73,4 @@ public class CursoServiceImpl implements CursoService {
 
     cursoRepository.deleteById(id);
   }
-
 }
