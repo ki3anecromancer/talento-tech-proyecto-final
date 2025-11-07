@@ -1,0 +1,28 @@
+package com.tech.academia.nexuscore.validation;
+
+import com.tech.academia.nexuscore.dto.ContenidoCreateRequestDTO;
+import com.tech.academia.nexuscore.exception.IncoherenciaContenidoException;
+import com.tech.academia.nexuscore.model.enums.TipoContenido;
+import org.springframework.stereotype.Component;
+
+@Component
+public class ContenidoValidator {
+
+  public void validarCoherenciaCreacion(ContenidoCreateRequestDTO dto) {
+
+    if (dto.tipo() == TipoContenido.VIDEO || dto.tipo() == TipoContenido.AUDIO) {
+      if (dto.urlArchivo() == null || dto.urlArchivo().isBlank()) {
+        throw new IncoherenciaContenidoException("El contenido tipo " + dto.tipo() + " requiere una URL de archivo.");
+      }
+      if (dto.duracionMinutos() == null) {
+        throw new IncoherenciaContenidoException("El contenido tipo " + dto.tipo() + " requiere la duración en minutos.");
+      }
+    }
+
+    if (dto.tipo() == TipoContenido.TEXTO) {
+      if (dto.duracionMinutos() != null) {
+        throw new IncoherenciaContenidoException("El contenido tipo TEXTO no debe incluir duración en minutos.");
+      }
+    }
+  }
+}

@@ -37,10 +37,10 @@ public class Contenido {
   @Column(nullable = false)
   private TipoContenido tipo;
 
-  @Column(name = "url_archivo", nullable = false)
+  @Column(name = "url_archivo")
   private String urlArchivo;
 
-  @Column(name = "duracion_minutos", nullable = false)
+  @Column(name = "duracion_minutos")
   private Integer duracionMinutos;
 
   @ManyToOne(fetch = FetchType.LAZY)

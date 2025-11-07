@@ -125,4 +125,17 @@ public class GlobalExceptionHandler {
         .status(HttpStatus.NOT_FOUND)
         .body(responseDTO);
   }
+
+  @ExceptionHandler(IncoherenciaContenidoException.class)
+  public ResponseEntity<ErrorResponseDTO> handleIncoherenciaContenido(IncoherenciaContenidoException ex) {
+
+    ErrorResponseDTO responseDTO = new ErrorResponseDTO(
+        HttpStatus.BAD_REQUEST,
+        ex.getMessage()
+    );
+
+    return ResponseEntity
+        .status(HttpStatus.BAD_REQUEST)
+        .body(responseDTO);
+  }
 }

@@ -4,5 +4,6 @@ public enum TipoContenido {
   VIDEO,
   TEXTO,
   CUESTIONARIO,
-  CODIGO
+  CODIGO,
+  AUDIO
 }
