@@ -2,6 +2,7 @@ package com.tech.academia.nexuscore.service.impl;
 
 import com.tech.academia.nexuscore.dto.ContenidoCreateRequestDTO;
 import com.tech.academia.nexuscore.dto.ContenidoResponseDTO;
+import com.tech.academia.nexuscore.exception.ContenidoNoEncontradoException;
 import com.tech.academia.nexuscore.exception.ModuloNoEncontradoException;
 import com.tech.academia.nexuscore.mapper.ContenidoMapper;
 import com.tech.academia.nexuscore.model.Contenido;
@@ -39,7 +40,14 @@ public class ContenidoServiceImpl {
     return contenidoMapper.contenidoToResponseDto(guardado);
   }
 
-  // obtenerContenidoPorId
+  // Obtener contenido por ID
+  public ContenidoResponseDTO obtenerContenidoPorId(Long id) {
+
+    Contenido contenido = contenidoRepository.findById(id).orElseThrow(() ->
+        new ContenidoNoEncontradoException(id));
+
+    return contenidoMapper.contenidoToResponseDto(contenido);
+  }
 
   // actualizarContenido
 

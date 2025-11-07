@@ -138,4 +138,17 @@ public class GlobalExceptionHandler {
         .status(HttpStatus.BAD_REQUEST)
         .body(responseDTO);
   }
+
+  @ExceptionHandler(ContenidoNoEncontradoException.class)
+  public ResponseEntity<ErrorResponseDTO> handleContenidoNoEncontrado(ContenidoNoEncontradoException ex) {
+
+    ErrorResponseDTO responseDTO = new ErrorResponseDTO(
+        HttpStatus.NOT_FOUND,
+        ex.getMessage()
+    );
+
+    return ResponseEntity
+        .status(HttpStatus.NOT_FOUND)
+        .body(responseDTO);
+  }
 }
