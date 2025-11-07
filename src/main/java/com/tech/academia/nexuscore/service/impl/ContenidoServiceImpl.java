@@ -80,5 +80,12 @@ public class ContenidoServiceImpl {
         .collect(Collectors.toSet());
   }
 
-  // eliminarContenido
+  // Eliminar contenido
+  public void eliminarContenido(Long id) {
+
+    Contenido contenido = contenidoRepository.findById(id).orElseThrow(() ->
+        new ContenidoNoEncontradoException(id));
+
+    contenidoRepository.delete(contenido);
+  }
 }
