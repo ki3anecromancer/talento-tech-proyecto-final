@@ -4,6 +4,7 @@ import com.tech.academia.nexuscore.dto.ContenidoCreateRequestDTO;
 import com.tech.academia.nexuscore.dto.ContenidoResponseDTO;
 import com.tech.academia.nexuscore.dto.ContenidoUpdateRequestDTO;
 import com.tech.academia.nexuscore.exception.ContenidoNoEncontradoException;
+import com.tech.academia.nexuscore.exception.CursoNoEncontradoException;
 import com.tech.academia.nexuscore.exception.ModuloNoEncontradoException;
 import com.tech.academia.nexuscore.mapper.ContenidoMapper;
 import com.tech.academia.nexuscore.model.Contenido;
@@ -11,6 +12,9 @@ import com.tech.academia.nexuscore.model.Modulo;
 import com.tech.academia.nexuscore.repository.ContenidoRepository;
 import com.tech.academia.nexuscore.repository.ModuloRepository;
 import com.tech.academia.nexuscore.validation.ContenidoValidator;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -65,7 +69,16 @@ public class ContenidoServiceImpl {
     );
   }
 
-  // eliminarContenido
+  // Obtener contenidos por modulo
+  public Set<ContenidoResponseDTO> obtenerContenidosPorModulo(Long idModulo) {
 
-  // obtenerContenidosPorModulo
+    Modulo modulo = moduloRepository.findById(idModulo).orElseThrow(() ->
+        new ModuloNoEncontradoException(idModulo));
+
+    return modulo.getContenidos().stream()
+        .map(contenidoMapper::contenidoToResponseDto)
+        .collect(Collectors.toSet());
+  }
+
+  // eliminarContenido
 }
