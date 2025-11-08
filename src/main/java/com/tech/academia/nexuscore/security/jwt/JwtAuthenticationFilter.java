@@ -1,16 +1,13 @@
 package com.tech.academia.nexuscore.security.jwt;
 
-import com.tech.academia.nexuscore.security.userdetails.UsuarioDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -20,51 +17,43 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
   private final JwtTokenProvider tokenProvider;
-  private final UsuarioDetailsService usuarioDetailsService;
 
+  /**
+   * Procesa las peticiones para buscar el JWT y establecer la autenticación.
+   */
   @Override
   protected void doFilterInternal(
       HttpServletRequest request,
       HttpServletResponse response,
       FilterChain filterChain) throws ServletException, IOException {
 
-    // 1. Obtener el token de la cabecera de la petición
     String token = obtenerTokenDeRequest(request);
 
-    // 2. Validar el token y cargar la autenticación
-    if (token != null && tokenProvider.validarToken(token)) {
+    if (StringUtils.hasText(token) && tokenProvider.validarToken(token)) {
 
-      // Obtener el ID del usuario del token
-      Long idUsuario = tokenProvider.obtenerIdDeJWT(token);
+      try {
+        // 1. Obtenemos el objeto Authentication (ID y Authorities/Roles) directamente del token.
+        Authentication authentication = tokenProvider.getAuthentication(token);
 
-      // Cargar los detalles del usuario
-      // Usamos loadUserById (asumiendo que lo agregamos al service, o lo cargamos por nombre de usuario)
-      // Por simplicidad, usaremos el ID para cargar el UserDetails
-      UserDetails userDetails = usuarioDetailsService.loadUserById(idUsuario);
+        // 2. Establecer la autenticación en el Contexto de Seguridad.
+        // 💡 La línea .setDetails(...) ha sido eliminada.
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
-      // 3. Crear el objeto de autenticación
-      UsernamePasswordAuthenticationToken authentication =
-          new UsernamePasswordAuthenticationToken(
-              userDetails,
-              null, // La contraseña ya no es necesaria, es null
-              userDetails.getAuthorities()
-          );
-
-      authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-      // 4. Establecer la autenticación en el Contexto de Seguridad
-      SecurityContextHolder.getContext().setAuthentication(authentication);
+      } catch (Exception e) {
+        logger.error("Error al establecer la autenticación desde el token JWT", e);
+      }
     }
 
-    // Continuar con la cadena de filtros de Spring Security
     filterChain.doFilter(request, response);
   }
 
+  /**
+   * Métod auxiliar para extraer el token 'Bearer ' de la cabecera.
+   */
   private String obtenerTokenDeRequest(HttpServletRequest request) {
 
     String bearerToken = request.getHeader("Authorization");
 
-    // El token viene típicamente como "Bearer <token>"
     if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
       return bearerToken.substring(7);
     }

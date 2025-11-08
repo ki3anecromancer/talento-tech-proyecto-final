@@ -1,8 +1,11 @@
 package com.tech.academia.nexuscore.security.auth;
 
+import com.tech.academia.nexuscore.dto.UsuarioCreateRequestDTO;
+import com.tech.academia.nexuscore.dto.UsuarioResponseDTO;
 import com.tech.academia.nexuscore.security.auth.dto.JwtAuthResponseDTO;
 import com.tech.academia.nexuscore.security.auth.dto.LoginRequestDTO;
 import com.tech.academia.nexuscore.security.jwt.JwtTokenProvider;
+import com.tech.academia.nexuscore.service.UsuarioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,6 +26,7 @@ public class AuthController {
 
   private final AuthenticationManager authenticationManager;
   private final JwtTokenProvider tokenProvider;
+  private final UsuarioService usuarioService;
   // Si tienes un servicio de registro, también lo inyectarías aquí
 
   /**
@@ -51,5 +55,15 @@ public class AuthController {
     return ResponseEntity
         .status(HttpStatus.OK)
         .body(new JwtAuthResponseDTO(token, "Bearer"));
+  }
+
+  // Crear usuario
+  @PostMapping("/register")
+  public ResponseEntity<UsuarioResponseDTO> crearUsuario(
+      @Valid @RequestBody UsuarioCreateRequestDTO requestDTO) {
+
+    return ResponseEntity
+        .status(HttpStatus.CREATED)
+        .body(usuarioService.crearUsuario(requestDTO));
   }
 }
