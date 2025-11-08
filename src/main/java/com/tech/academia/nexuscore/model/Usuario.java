@@ -65,4 +65,8 @@ public class Usuario {
   @CollectionTable(name = "usuario_rol", joinColumns = @JoinColumn(name = "usuario_id"))
   @Enumerated(EnumType.STRING)
   private Set<Rol> roles;
+
+  @JsonManagedReference
+  @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+  private Set<Curso> cursos;
 }
