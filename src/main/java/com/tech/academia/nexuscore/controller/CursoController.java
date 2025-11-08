@@ -1,6 +1,7 @@
 package com.tech.academia.nexuscore.controller;
 
 import com.tech.academia.nexuscore.dto.CursoCreateRequestDTO;
+import com.tech.academia.nexuscore.dto.CursoCreateResponseDTO;
 import com.tech.academia.nexuscore.dto.CursoResponseDTO;
 import com.tech.academia.nexuscore.dto.CursoUpdateRequestDTO;
 import com.tech.academia.nexuscore.service.CursoService;
@@ -9,6 +10,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -45,14 +47,17 @@ public class CursoController {
   }
 
   // Crear curso
-  @PostMapping
+  /*
+  @PostMapping("/{id}")
   public ResponseEntity<CursoResponseDTO> crearCurso(
-      @Valid @RequestBody CursoCreateRequestDTO createDto) {
+      @Valid @RequestBody CursoCreateRequestDTO createDto,
+      @PathVariable Long idUsuario) {
 
     return ResponseEntity
         .status(HttpStatus.CREATED)
-        .body(cursoService.crearCurso(createDto));
+        .body(cursoService.crearCurso(createDto, idUsuario));
   }
+   */
 
   // Actualizar curso
   @PutMapping("/{id}")
@@ -73,6 +78,24 @@ public class CursoController {
     cursoService.eliminarCurso(id);
 
     return ResponseEntity.noContent().build();
+  }
+
+
+  // ========================================================
+  //                SECURITY CONTROLLER
+  // ========================================================
+
+  // Crear curso
+  @PostMapping
+  public ResponseEntity<CursoCreateResponseDTO> crearCursoLogueado(
+      @Valid @RequestBody CursoCreateRequestDTO createDto,
+      @AuthenticationPrincipal String idUsuarioString) {
+
+    Long idUsuario = Long.parseLong(idUsuarioString);
+
+    return ResponseEntity
+        .status(HttpStatus.CREATED)
+        .body(cursoService.crearCurso(createDto, idUsuario));
   }
 }
 

@@ -65,6 +65,8 @@ public class WebSecurityConfig {
 
             .requestMatchers("/api/auth/**").permitAll()
 
+            .requestMatchers(HttpMethod.POST, "/api/cursos").hasAnyRole("USER", "INSTRUCTOR", "ADMIN")
+
             .requestMatchers(HttpMethod.GET, "/api/usuarios/me").hasAnyRole("USER", "INSTRUCTOR", "ADMIN")
             .requestMatchers(HttpMethod.DELETE, "/api/usuarios/me").hasAnyRole("USER", "INSTRUCTOR", "ADMIN")
             .requestMatchers(HttpMethod.PATCH, "/api/usuarios/me").hasAnyRole("USER", "INSTRUCTOR", "ADMIN")

@@ -78,6 +78,10 @@ public class UsuarioController {
     return ResponseEntity.noContent().build();
   }
 
+  // ========================================================
+  //                SECURITY CONTROLLER
+  // ========================================================
+
   // Obtener perfil logueado logueado
   @GetMapping("/me")
   public ResponseEntity<UsuarioResponseDTO> obtenerPerfilLogueado(

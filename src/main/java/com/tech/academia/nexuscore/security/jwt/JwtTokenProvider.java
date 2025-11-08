@@ -1,5 +1,6 @@
 package com.tech.academia.nexuscore.security.jwt;
 
+import com.tech.academia.nexuscore.model.Usuario;
 import com.tech.academia.nexuscore.security.userdetails.UsuarioDetails;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -58,6 +59,33 @@ public class JwtTokenProvider {
         .claim("username", usuarioPrincipal.getUsername())
         .signWith(key())
         .compact();
+  }
+
+  // 💡 Nuevo métod que acepta la entidad Usuario
+  public String generarToken(Usuario usuario) {
+
+    // Necesitamos crear un objeto Authentication temporal para reutilizar la lógica
+
+    // 1. Crear las Authorities a partir de los roles del Usuario (¡CON PREFIJO ROLE_!)
+    List<String> rolesString = usuario.getRoles().stream()
+        .map(rol -> "ROLE_" + rol.name())
+        .toList();
+
+    // Convertir a SimpleGrantedAuthority
+    Collection<? extends GrantedAuthority> authorities = rolesString.stream()
+        .map(SimpleGrantedAuthority::new)
+        .toList();
+
+    // 2. Crear un objeto Authentication simple con el ID y Authorities
+    // Usamos el ID como principal, ya que es lo que espera el token
+    Authentication authentication = new UsernamePasswordAuthenticationToken(
+        usuario.getId().toString(), // Principal (Subject)
+        null,                     // Credenciales (null para JWT)
+        authorities
+    );
+
+    // 3. Reutilizar tu métod original de generación
+    return generarToken(authentication);
   }
 
   /**

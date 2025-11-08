@@ -1,6 +1,7 @@
 package com.tech.academia.nexuscore.service;
 
 import com.tech.academia.nexuscore.dto.CursoCreateRequestDTO;
+import com.tech.academia.nexuscore.dto.CursoCreateResponseDTO;
 import com.tech.academia.nexuscore.dto.CursoResponseDTO;
 import com.tech.academia.nexuscore.dto.CursoUpdateRequestDTO;
 import java.util.List;
@@ -14,7 +15,7 @@ public interface CursoService {
   CursoResponseDTO  obtenerCursoPorId(Long id);
 
   // Crear curso
-  CursoResponseDTO crearCurso(CursoCreateRequestDTO createDto);
+  CursoCreateResponseDTO crearCurso(CursoCreateRequestDTO createDto, Long idUsuario);
 
   // Actualizar curso
   CursoResponseDTO actualizarCurso(Long id, CursoUpdateRequestDTO updateDto);
