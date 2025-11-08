@@ -99,4 +99,16 @@ public class CursoServiceImpl implements CursoService {
 
     cursoRepository.deleteById(id);
   }
+
+  // Obtener cursos por usuario
+  @Override
+  public List<CursoResponseDTO> obtenerCursosPorUsuario(Long idUsuario) {
+
+    Usuario usuario = usuarioRepository.findById(idUsuario).orElseThrow(() ->
+        new UsuarioNoEncontradoException(idUsuario));
+
+    return cursoRepository.findAllByUsuario(usuario).stream()
+        .map(cursoMapper::cursoToResponseDto)
+        .toList();
+  }
 }

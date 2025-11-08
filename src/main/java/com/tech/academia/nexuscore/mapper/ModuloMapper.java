@@ -5,6 +5,7 @@ import com.tech.academia.nexuscore.dto.ModuloResponseDTO;
 import com.tech.academia.nexuscore.dto.ModuloUpdateRequestDTO;
 import com.tech.academia.nexuscore.model.Curso;
 import com.tech.academia.nexuscore.model.Modulo;
+import java.util.HashSet;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -28,7 +29,7 @@ public class ModuloMapper {
         createDto.titulo(),
         createDto.orden(),
         curso,
-        null
+        new HashSet<>()
     );
   }
 

@@ -13,11 +13,17 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-@Data
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode(exclude = {"usuario", "curso"})
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -34,12 +40,12 @@ public class Inscripcion {
   @Column(nullable = false)
   private Double progreso;
 
-  @JsonBackReference
+  @JsonBackReference("usuario-inscripciones")
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "usuario_id", nullable = false)
   private Usuario usuario;
 
-  @JsonBackReference
+  @JsonBackReference("curso-inscripciones")
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "curso_id", nullable = false)
   private Curso curso;

@@ -20,11 +20,18 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-@Data
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode(exclude = {"inscripciones", "progresoContenidos", "cursos"})
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -53,20 +60,20 @@ public class Usuario {
   @Column(name = "fecha_creacion", nullable = false)
   private LocalDateTime fechaCreacion;
 
-  @JsonManagedReference
+  @JsonManagedReference("usuario-inscripciones")
   @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<Inscripcion> inscripciones = new HashSet<>();
 
-  @JsonManagedReference
+  @JsonManagedReference("usuario-progreso")
   @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
-  private Set<ProgresoContenido> progresoContenidos;
+  private Set<ProgresoContenido> progresoContenidos = new HashSet<>();
 
   @ElementCollection(targetClass = Rol.class)
   @CollectionTable(name = "usuario_rol", joinColumns = @JoinColumn(name = "usuario_id"))
   @Enumerated(EnumType.STRING)
-  private Set<Rol> roles;
+  private Set<Rol> roles = new HashSet<>();
 
-  @JsonManagedReference
+  @JsonManagedReference("usuario-cursos")
   @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
-  private Set<Curso> cursos;
+  private Set<Curso> cursos = new HashSet<>();
 }

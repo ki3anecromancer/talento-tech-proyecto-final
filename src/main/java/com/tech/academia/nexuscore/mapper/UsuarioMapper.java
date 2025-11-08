@@ -28,9 +28,10 @@ public class UsuarioMapper {
         dto.nombre(),
         dto.apellido(),
         LocalDateTime.now(),
-        null,
-        null,
-        roles
+        new HashSet<>(),
+        new HashSet<>(),
+        roles,
+        new HashSet<>()
     );
   }
 

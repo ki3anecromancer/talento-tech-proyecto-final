@@ -17,16 +17,14 @@ public class UsuarioDetailsService implements UserDetailsService {
   @Override
   public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
 
-    // Buscar el usuario por nombre de usuario o email
     Usuario usuario = usuarioRepository.findByNombreUsuarioOrEmail(usernameOrEmail, usernameOrEmail)
         .orElseThrow(() -> new UsernameNotFoundException(
             "Usuario no encontrado con el nombre o email: " + usernameOrEmail));
 
-    // Devolver un objeto UserDetails
     return new UsuarioDetails(usuario);
   }
 
-  // Métod que permite cargar por ID (más limpio cuando el JWT usa el ID)
+  /** Permite cargar UserDetails directamente por ID (útil para JWT). */
   public UserDetails loadUserById(Long id) throws UsernameNotFoundException {
     Usuario usuario = usuarioRepository.findById(id)
         .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado con ID: " + id));

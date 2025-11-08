@@ -6,6 +6,7 @@ import com.tech.academia.nexuscore.dto.CursoResponseDTO;
 import com.tech.academia.nexuscore.dto.CursoUpdateRequestDTO;
 import com.tech.academia.nexuscore.dto.ModuloResponseDTO;
 import com.tech.academia.nexuscore.model.Curso;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
@@ -22,7 +23,8 @@ public class CursoMapper {
         createDto.descripcion(),
         createDto.duracionHoras(),
         createDto.precio(),
-        null,
+        new HashSet<>(),
+        new HashSet<>(),
         null
     );
   }

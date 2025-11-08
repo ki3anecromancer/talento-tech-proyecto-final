@@ -1,7 +1,6 @@
 package com.tech.academia.nexuscore.security;
 
 import com.tech.academia.nexuscore.security.jwt.JwtAuthenticationFilter;
-import com.tech.academia.nexuscore.security.userdetails.UsuarioDetailsService;
 import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -29,73 +28,42 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @RequiredArgsConstructor
 public class WebSecurityConfig {
 
-  private final UsuarioDetailsService usuarioDetailsService;
   private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-  // Codificador de contraseña
   @Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
   }
 
-  // Define el administrador de autenticación
   @Bean
   public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
     return config.getAuthenticationManager();
   }
 
-  // Configuración de seguridad HTTP
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
     http
-        // Aplicar la configuración del CORS
         .cors(Customizer.withDefaults())
-
-        // Deshabilitar CSRF
         .csrf(AbstractHttpConfigurer::disable)
-
-        // Manejo de sesiones: Stateless (no guarda estado, usa JWT)
         .sessionManagement(session ->
             session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-        // Manejo de autorización de rutas
         .authorizeHttpRequests(authorize -> authorize
             .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-
             .requestMatchers("/api/auth/**").permitAll()
 
-            .requestMatchers(HttpMethod.POST, "/api/cursos").hasAnyRole("USER", "INSTRUCTOR", "ADMIN")
+            .requestMatchers(HttpMethod.POST, "/api/cursos").permitAll()
+            .requestMatchers(HttpMethod.GET, "/api/cursos/me").hasAnyAuthority("ROLE_USER", "ROLE_INSTRUCTOR", "ROLE_ADMIN")
 
-            .requestMatchers(HttpMethod.GET, "/api/usuarios/me").hasAnyRole("USER", "INSTRUCTOR", "ADMIN")
-            .requestMatchers(HttpMethod.DELETE, "/api/usuarios/me").hasAnyRole("USER", "INSTRUCTOR", "ADMIN")
-            .requestMatchers(HttpMethod.PATCH, "/api/usuarios/me").hasAnyRole("USER", "INSTRUCTOR", "ADMIN")
+            .requestMatchers(HttpMethod.GET, "/api/usuarios/me").hasAnyAuthority("ROLE_USER", "ROLE_INSTRUCTOR", "ROLE_ADMIN")
+            .requestMatchers(HttpMethod.DELETE, "/api/usuarios/me").hasAnyAuthority("ROLE_USER", "ROLE_INSTRUCTOR", "ROLE_ADMIN")
+            .requestMatchers(HttpMethod.PATCH, "/api/usuarios/me").hasAnyAuthority("ROLE_USER", "ROLE_INSTRUCTOR", "ROLE_ADMIN")
 
             .anyRequest().authenticated()
         )
-
-        // Agregar el filtro JWT
-        // Se ejecuta ANTES del filtro UsernamePasswordAuthenticationFilter
         .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
     return http.build();
-  }
-
-  // 3. Bean que define la política CORS
-  @Bean
-  public CorsConfigurationSource corsConfigurationSource() {
-    CorsConfiguration configuration = new CorsConfiguration();
-    // Permite tu origen de frontend
-    configuration.setAllowedOrigins(Arrays.asList("http://127.0.0.1:5500", "http://localhost:5500"));
-    configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-    configuration.setAllowedHeaders(
-        Arrays.asList("Authorization", "Content-Type", "X-Requested-With", "accept", "Origin"));
-    // Permite las credenciales y, lo más importante, expone los headers relevantes
-    configuration.setAllowCredentials(true);
-    configuration.setMaxAge(3600L); // Cache del preflight por 1 hora
-
-    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/**", configuration); // Aplica a todas las rutas
-    return source;
   }
 }

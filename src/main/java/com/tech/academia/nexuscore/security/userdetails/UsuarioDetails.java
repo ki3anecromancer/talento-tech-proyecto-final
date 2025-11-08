@@ -14,14 +14,12 @@ public class UsuarioDetails implements UserDetails {
   private final Long id;
   private final String nombreUsuario;
   private final String contrasena;
-  private final String email;
   private final Collection<? extends GrantedAuthority> authorities;
 
   public UsuarioDetails(Usuario usuario) {
     this.id = usuario.getId();
     this.nombreUsuario = usuario.getNombreUsuario();
     this.contrasena = usuario.getContrasena();
-    this.email = usuario.getEmail();
 
     this.authorities = usuario.getRoles().stream()
         .map(rol -> new SimpleGrantedAuthority("ROLE_" + rol.name()))

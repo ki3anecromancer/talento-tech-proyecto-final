@@ -2,19 +2,18 @@ package com.tech.academia.nexuscore.security.jwt;
 
 import com.tech.academia.nexuscore.model.Usuario;
 import com.tech.academia.nexuscore.security.userdetails.UsuarioDetails;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
+import jakarta.annotation.PostConstruct;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.crypto.SecretKey;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -22,6 +21,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
+@Log4j2
 @Component
 public class JwtTokenProvider {
 
@@ -31,19 +31,19 @@ public class JwtTokenProvider {
   @Value("${jwt.expiration-ms}")
   private long jwtExpirationMs;
 
-  // Metodo para generar la clave de firma (key)
-  private SecretKey key() {
-    return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
+  private SecretKey secretKey;
+
+  @PostConstruct
+  private void init() {
+    this.secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
   }
 
-  /**
-   * Genera un JWT para un usuario autenticado. (No requiere corrección)
-   */
+  // 💡 Métod base para generar JWT a partir de UsuarioDetails
   public String generarToken(Authentication authentication) {
 
+    // 💡 Aquí reside la corrección: SOLO se usa este métod después del login.
     UsuarioDetails usuarioPrincipal = (UsuarioDetails) authentication.getPrincipal();
 
-    // Esto ya devuelve ["ROLE_USER", ...]
     List<String> roles = usuarioPrincipal.getAuthorities().stream()
         .map(GrantedAuthority::getAuthority)
         .toList();
@@ -55,45 +55,61 @@ public class JwtTokenProvider {
         .subject(usuarioPrincipal.getId().toString())
         .issuedAt(ahora)
         .expiration(fechaExpiracion)
-        .claim("roles", roles) // Contiene el prefijo ROLE_
+        .claim("roles", roles)
         .claim("username", usuarioPrincipal.getUsername())
-        .signWith(key())
+        .signWith(this.secretKey)
         .compact();
   }
 
-  // 💡 Nuevo métod que acepta la entidad Usuario
+  // 💡 Métod para regenerar token (cuando cambia el rol). EVITA LLAMAR generarToken(Authentication)
   public String generarToken(Usuario usuario) {
 
-    // Necesitamos crear un objeto Authentication temporal para reutilizar la lógica
-
-    // 1. Crear las Authorities a partir de los roles del Usuario (¡CON PREFIJO ROLE_!)
-    List<String> rolesString = usuario.getRoles().stream()
+    List<String> roles = usuario.getRoles().stream()
         .map(rol -> "ROLE_" + rol.name())
         .toList();
 
-    // Convertir a SimpleGrantedAuthority
-    Collection<? extends GrantedAuthority> authorities = rolesString.stream()
-        .map(SimpleGrantedAuthority::new)
-        .toList();
+    Date ahora = new Date();
+    Date fechaExpiracion = new Date(ahora.getTime() + jwtExpirationMs);
 
-    // 2. Crear un objeto Authentication simple con el ID y Authorities
-    // Usamos el ID como principal, ya que es lo que espera el token
-    Authentication authentication = new UsernamePasswordAuthenticationToken(
-        usuario.getId().toString(), // Principal (Subject)
-        null,                     // Credenciales (null para JWT)
-        authorities
-    );
-
-    // 3. Reutilizar tu métod original de generación
-    return generarToken(authentication);
+    return Jwts.builder()
+        .subject(usuario.getId().toString())
+        .issuedAt(ahora)
+        .expiration(fechaExpiracion)
+        .claim("roles", roles)
+        .claim("username", usuario.getNombreUsuario()) // Usamos nombreUsuario de la entidad
+        .signWith(this.secretKey)
+        .compact();
   }
 
-  /**
-   * Extrae el ID del usuario del token (el Subject) (No requiere corrección)
-   */
+  public Authentication getAuthentication(String token) {
+    Claims claims = Jwts.parser()
+        .verifyWith(this.secretKey)
+        .build()
+        .parseSignedClaims(token)
+        .getPayload();
+
+    String idUsuario = claims.getSubject();
+
+    // Manejo robusto del claim 'roles' que Jackson puede devolver como ArrayList<String> o String[]
+    List<String> roles = new ArrayList<>();
+    Object rolesClaim = claims.get("roles");
+
+    if (rolesClaim instanceof List<?> list) {
+      list.stream().map(Object::toString).forEach(roles::add);
+    } else if (rolesClaim != null) {
+      roles.add(rolesClaim.toString());
+    }
+
+    Collection<? extends GrantedAuthority> authorities = roles.stream()
+        .map(SimpleGrantedAuthority::new)
+        .collect(Collectors.toList());
+
+    return new UsernamePasswordAuthenticationToken(idUsuario, null, authorities);
+  }
+
   public Long obtenerIdDeJWT(String token) {
     Claims claims = Jwts.parser()
-        .verifyWith(key())
+        .verifyWith(this.secretKey)
         .build()
         .parseSignedClaims(token)
         .getPayload();
@@ -101,55 +117,23 @@ public class JwtTokenProvider {
     return Long.parseLong(claims.getSubject());
   }
 
-  // 💡 INICIO DE LA CORRECCIÓN/ADICIÓN
-  /**
-   * Obtiene el objeto Authentication a partir del token.
-   * ESTO ES USADO POR EL FILTRO JWT para validar el 403.
-   */
-  public Authentication getAuthentication(String token) {
-    Claims claims = Jwts.parser()
-        .verifyWith(key())
-        .build()
-        .parseSignedClaims(token)
-        .getPayload();
-
-    // 1. Obtener el Subject (ID de usuario)
-    String idUsuario = claims.getSubject();
-
-    // 2. Extraer los roles (ya vienen con el prefijo ROLE_)
-    // Usamos .get("roles") y lo casteamos a List<String>
-    List<String> roles = (List<String>) claims.get("roles");
-
-    // 3. Crear las GrantedAuthority
-    Collection<? extends GrantedAuthority> authorities = roles.stream()
-        .map(SimpleGrantedAuthority::new) // Usamos los roles TAL CUAL vienen (ej: "ROLE_USER")
-        .collect(Collectors.toList());
-
-    // 4. Crear el token de autenticación
-    // Usamos el ID de usuario como principal y las autoridades extraídas
-    return new UsernamePasswordAuthenticationToken(idUsuario, null, authorities);
-  }
-
-  /**
-   * Verificar la integridad y expiración del token (No requiere corrección)
-   */
   public boolean validarToken(String token) {
     try {
       Jwts.parser()
-          .verifyWith(key())
+          .verifyWith(this.secretKey)
           .build()
           .parse(token);
       return true;
     } catch (SignatureException e) {
-      // Log: Firma JWT inválida
+      log.error("Firma JWT inválida: {}", e.getMessage());
     } catch (MalformedJwtException e) {
-      // Log: Token JWT malformado
+      log.error("Token JWT malformado: {}", e.getMessage());
     } catch (ExpiredJwtException e) {
-      // Log: Token JWT expirado
+      log.error("Token JWT expirado: {}", e.getMessage());
     } catch (UnsupportedJwtException e) {
-      // Log: JWT no soportado
+      log.error("JWT no soportado: {}", e.getMessage());
     } catch (IllegalArgumentException e) {
-      // Log: Cadena JWT vacía
+      log.error("Cadena JWT vacía o nula: {}", e.getMessage());
     }
     return false;
   }

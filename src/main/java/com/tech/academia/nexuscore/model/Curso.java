@@ -18,11 +18,18 @@ import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-@Data
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode(exclude = {"modulos", "inscripciones", "usuario"})
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -45,15 +52,15 @@ public class Curso {
   @Column(nullable = false)
   private BigDecimal precio;
 
-  @JsonManagedReference
+  @JsonManagedReference("curso-modulos")
   @OneToMany(mappedBy = "curso", cascade = CascadeType.ALL, orphanRemoval = true)
-  private Set<Modulo> modulos;
+  private Set<Modulo> modulos = new HashSet<>();
 
-  @JsonManagedReference
+  @JsonManagedReference("curso-inscripciones")
   @OneToMany(mappedBy = "curso", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<Inscripcion> inscripciones = new HashSet<>();
 
-  @JsonBackReference
+  @JsonBackReference("usuario-cursos")
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "usuario_id", nullable = false)
   private Usuario usuario;

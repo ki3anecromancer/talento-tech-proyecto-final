@@ -22,4 +22,7 @@ public interface CursoService {
 
   // Eliminar curso
   void eliminarCurso(Long id);
+
+  // Obtener cursos por usuario
+  List<CursoResponseDTO> obtenerCursosPorUsuario(Long idUsuario);
 }

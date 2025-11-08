@@ -17,13 +17,22 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.HashSet;
 import java.util.Set;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Builder;
+import lombok.Builder.Default;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-@Data
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode(exclude = {"modulo", "progresoContenidos"})
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -47,12 +56,12 @@ public class Contenido {
   @Column(name = "duracion_minutos")
   private Integer duracionMinutos;
 
-  @JsonBackReference
+  @JsonBackReference("modulo-contenidos")
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "modulo_id", nullable = false)
   private Modulo modulo;
 
-  @JsonManagedReference
+  @JsonManagedReference("contenido-progreso")
   @OneToMany(mappedBy = "contenido", cascade = CascadeType.ALL, orphanRemoval = true)
-  private Set<ProgresoContenido> progresoContenidos;
+  private Set<ProgresoContenido> progresoContenidos = new HashSet<>();
 }

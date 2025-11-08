@@ -97,5 +97,16 @@ public class CursoController {
         .status(HttpStatus.CREATED)
         .body(cursoService.crearCurso(createDto, idUsuario));
   }
+
+  @GetMapping("/me")
+  public ResponseEntity<List<CursoResponseDTO>> obtenerCursosPorUsuario(
+      @AuthenticationPrincipal String idUsuarioString) {
+
+    Long idUsuario = Long.parseLong(idUsuarioString);
+
+    return ResponseEntity
+        .status(HttpStatus.OK)
+        .body(cursoService.obtenerCursosPorUsuario(idUsuario));
+  }
 }
 

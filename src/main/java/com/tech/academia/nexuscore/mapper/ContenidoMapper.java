@@ -5,6 +5,7 @@ import com.tech.academia.nexuscore.dto.ContenidoResponseDTO;
 import com.tech.academia.nexuscore.dto.ContenidoUpdateRequestDTO;
 import com.tech.academia.nexuscore.model.Contenido;
 import com.tech.academia.nexuscore.model.Modulo;
+import java.util.HashSet;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -20,7 +21,7 @@ public class ContenidoMapper {
         createDto.urlArchivo(),
         createDto.duracionMinutos(),
         modulo,
-        null
+        new HashSet<>()
     );
   }
 
