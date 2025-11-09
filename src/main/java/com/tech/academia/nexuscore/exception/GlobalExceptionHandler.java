@@ -151,4 +151,17 @@ public class GlobalExceptionHandler {
         .status(HttpStatus.NOT_FOUND)
         .body(responseDTO);
   }
+
+  @ExceptionHandler(AccesoDenegadoException.class)
+  public ResponseEntity<ErrorResponseDTO> handleAccesoDenegado(AccesoDenegadoException ex) {
+
+    ErrorResponseDTO responseDTO = new ErrorResponseDTO(
+        HttpStatus.FORBIDDEN,
+        ex.getMessage()
+    );
+
+    return ResponseEntity
+        .status(HttpStatus.FORBIDDEN)
+        .body(responseDTO);
+  }
 }

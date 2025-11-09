@@ -59,28 +59,6 @@ public class CursoController {
   }
    */
 
-  // Actualizar curso
-  @PutMapping("/{id}")
-  public ResponseEntity<CursoResponseDTO> actualizarCurso(
-      @PathVariable Long id,
-      @Valid @RequestBody CursoUpdateRequestDTO updateDto) {
-
-    return ResponseEntity
-        .status(HttpStatus.OK)
-        .body(cursoService.actualizarCurso(id, updateDto));
-  }
-
-  // Eliminar curso
-  @DeleteMapping("/{id}")
-  public ResponseEntity<Void> eliminarCurso(
-      @PathVariable Long id) {
-
-    cursoService.eliminarCurso(id);
-
-    return ResponseEntity.noContent().build();
-  }
-
-
   // ========================================================
   //                SECURITY CONTROLLER
   // ========================================================
@@ -98,6 +76,7 @@ public class CursoController {
         .body(cursoService.crearCurso(createDto, idUsuario));
   }
 
+  // Obtener cursos por usuario
   @GetMapping("/me")
   public ResponseEntity<List<CursoResponseDTO>> obtenerCursosPorUsuario(
       @AuthenticationPrincipal String idUsuarioString) {
@@ -107,6 +86,33 @@ public class CursoController {
     return ResponseEntity
         .status(HttpStatus.OK)
         .body(cursoService.obtenerCursosPorUsuario(idUsuario));
+  }
+
+  // Actualizar curso
+  @PutMapping("/{idCurso}")
+  public ResponseEntity<CursoResponseDTO> actualizarCurso(
+      @PathVariable Long idCurso,
+      @Valid @RequestBody CursoUpdateRequestDTO updateDto,
+      @AuthenticationPrincipal String idUsuarioString) {
+
+    Long idUsuario = Long.parseLong(idUsuarioString);
+
+    return ResponseEntity
+        .status(HttpStatus.OK)
+        .body(cursoService.actualizarCurso(idCurso, idUsuario, updateDto));
+  }
+
+  // Eliminar curso
+  @DeleteMapping("/{idCurso}")
+  public ResponseEntity<Void> eliminarCurso(
+      @PathVariable Long idCurso,
+      @AuthenticationPrincipal String idUsuarioString) {
+
+    Long idUsuario = Long.parseLong(idUsuarioString);
+
+    cursoService.eliminarCurso(idCurso, idUsuario);
+
+    return ResponseEntity.noContent().build();
   }
 }
 

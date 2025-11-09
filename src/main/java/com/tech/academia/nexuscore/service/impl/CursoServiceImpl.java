@@ -4,6 +4,7 @@ import com.tech.academia.nexuscore.dto.CursoCreateRequestDTO;
 import com.tech.academia.nexuscore.dto.CursoCreateResponseDTO;
 import com.tech.academia.nexuscore.dto.CursoResponseDTO;
 import com.tech.academia.nexuscore.dto.CursoUpdateRequestDTO;
+import com.tech.academia.nexuscore.exception.AccesoDenegadoException;
 import com.tech.academia.nexuscore.exception.CursoNoEncontradoException;
 import com.tech.academia.nexuscore.exception.UsuarioNoEncontradoException;
 import com.tech.academia.nexuscore.mapper.CursoMapper;
@@ -61,7 +62,6 @@ public class CursoServiceImpl implements CursoService {
 
     boolean rolCambiado = usuario.getRoles().add(Rol.INSTRUCTOR);
 
-    usuarioRepository.save(usuario);
     Curso cursoGuardado = cursoRepository.save(curso);
 
     String nuevoToken = null;
@@ -77,10 +77,20 @@ public class CursoServiceImpl implements CursoService {
 
   // Actualizar curso
   @Override
-  public CursoResponseDTO actualizarCurso(Long id, CursoUpdateRequestDTO updateDto) {
+  public CursoResponseDTO actualizarCurso(Long idCurso, Long idUsuario, CursoUpdateRequestDTO updateDto) {
 
-    Curso curso = cursoRepository.findById(id).orElseThrow(() ->
-        new CursoNoEncontradoException(id));
+    Curso curso = cursoRepository.findById(idCurso).orElseThrow(() ->
+        new CursoNoEncontradoException(idCurso));
+
+    Usuario usuario = usuarioRepository.findById(idUsuario).orElseThrow(() ->
+        new UsuarioNoEncontradoException(idUsuario));
+
+    boolean esAdmin = usuario.getRoles().contains(Rol.ADMIN);
+    boolean esPropietario = curso.getUsuario().getId().equals(idUsuario);
+
+    if (!esAdmin && !esPropietario) {
+      throw new AccesoDenegadoException();
+    }
 
     cursoMapper.actualizarCurso(curso, updateDto);
 
@@ -91,13 +101,22 @@ public class CursoServiceImpl implements CursoService {
 
   // Eliminar curso
   @Override
-  public void eliminarCurso(Long id) {
+  public void eliminarCurso(Long idCurso, Long idUsuario) {
 
-    if (!cursoRepository.existsById(id)) {
-      throw new CursoNoEncontradoException(id);
+    Curso curso = cursoRepository.findById(idCurso).orElseThrow(() ->
+        new CursoNoEncontradoException(idCurso));
+
+    Usuario usuario = usuarioRepository.findById(idUsuario).orElseThrow(() ->
+        new UsuarioNoEncontradoException(idUsuario));
+
+    boolean esAdmin = usuario.getRoles().contains(Rol.ADMIN);
+    boolean esPropietario = curso.getUsuario().getId().equals(idUsuario);
+
+    if (!esAdmin && !esPropietario) {
+      throw new AccesoDenegadoException();
     }
 
-    cursoRepository.deleteById(id);
+    cursoRepository.delete(curso);
   }
 
   // Obtener cursos por usuario

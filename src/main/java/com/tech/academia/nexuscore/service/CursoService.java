@@ -18,10 +18,10 @@ public interface CursoService {
   CursoCreateResponseDTO crearCurso(CursoCreateRequestDTO createDto, Long idUsuario);
 
   // Actualizar curso
-  CursoResponseDTO actualizarCurso(Long id, CursoUpdateRequestDTO updateDto);
+  CursoResponseDTO actualizarCurso(Long idCurso, Long idUsuario, CursoUpdateRequestDTO updateDto);
 
   // Eliminar curso
-  void eliminarCurso(Long id);
+  void eliminarCurso(Long idCurso, Long idUsuario);
 
   // Obtener cursos por usuario
   List<CursoResponseDTO> obtenerCursosPorUsuario(Long idUsuario);

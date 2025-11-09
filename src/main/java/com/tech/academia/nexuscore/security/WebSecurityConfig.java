@@ -53,12 +53,14 @@ public class WebSecurityConfig {
             .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
             .requestMatchers("/api/auth/**").permitAll()
 
-            .requestMatchers(HttpMethod.POST, "/api/cursos").permitAll()
-            .requestMatchers(HttpMethod.GET, "/api/cursos/me").hasAnyAuthority("ROLE_USER", "ROLE_INSTRUCTOR", "ROLE_ADMIN")
+            .requestMatchers(HttpMethod.POST, "/api/cursos").hasAnyRole("USER", "INSTRUCTOR", "ADMIN")
+            .requestMatchers(HttpMethod.GET, "/api/cursos/me").hasAnyRole("USER", "INSTRUCTOR", "ADMIN")
+            .requestMatchers(HttpMethod.PUT, "/api/cursos/{idCurso}").hasAnyRole("INSTRUCTOR", "ADMIN")
+            .requestMatchers(HttpMethod.DELETE, "/api/cursos/{idCurso}").hasAnyRole("INSTRUCTOR", "ADMIN")
 
-            .requestMatchers(HttpMethod.GET, "/api/usuarios/me").hasAnyAuthority("ROLE_USER", "ROLE_INSTRUCTOR", "ROLE_ADMIN")
-            .requestMatchers(HttpMethod.DELETE, "/api/usuarios/me").hasAnyAuthority("ROLE_USER", "ROLE_INSTRUCTOR", "ROLE_ADMIN")
-            .requestMatchers(HttpMethod.PATCH, "/api/usuarios/me").hasAnyAuthority("ROLE_USER", "ROLE_INSTRUCTOR", "ROLE_ADMIN")
+            .requestMatchers(HttpMethod.GET, "/api/usuarios/me").hasAnyRole("USER", "INSTRUCTOR", "ADMIN")
+            .requestMatchers(HttpMethod.DELETE, "/api/usuarios/me").hasAnyRole("USER", "INSTRUCTOR", "ADMIN")
+            .requestMatchers(HttpMethod.PATCH, "/api/usuarios/me").hasAnyRole("USER", "INSTRUCTOR", "ADMIN")
 
             .anyRequest().authenticated()
         )

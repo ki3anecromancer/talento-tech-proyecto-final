@@ -9,5 +9,6 @@ public record CursoResponseDTO (
     String descripcion,
     Integer duracionHoras,
     BigDecimal precio,
-    Set<ModuloResponseDTO> modulos
+    Set<ModuloResponseDTO> modulos,
+    Long idUsuario
 ) {}
