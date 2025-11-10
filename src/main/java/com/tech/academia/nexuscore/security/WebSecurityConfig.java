@@ -55,6 +55,8 @@ public class WebSecurityConfig {
 
             .requestMatchers(HttpMethod.POST, "/api/cursos").hasAnyRole("USER", "INSTRUCTOR", "ADMIN")
             .requestMatchers(HttpMethod.GET, "/api/cursos/me").hasAnyRole("USER", "INSTRUCTOR", "ADMIN")
+
+            .requestMatchers(HttpMethod.GET, "/api/cursos/{id}").hasAnyRole("USER", "INSTRUCTOR", "ADMIN")
             .requestMatchers(HttpMethod.PUT, "/api/cursos/{idCurso}").hasAnyRole("INSTRUCTOR", "ADMIN")
             .requestMatchers(HttpMethod.DELETE, "/api/cursos/{idCurso}").hasAnyRole("INSTRUCTOR", "ADMIN")
 
@@ -62,7 +64,9 @@ public class WebSecurityConfig {
             .requestMatchers(HttpMethod.DELETE, "/api/usuarios/me").hasAnyRole("USER", "INSTRUCTOR", "ADMIN")
             .requestMatchers(HttpMethod.PATCH, "/api/usuarios/me").hasAnyRole("USER", "INSTRUCTOR", "ADMIN")
 
-            .anyRequest().authenticated()
+            .requestMatchers(HttpMethod.POST, "/api/cursos/{idCurso}/modulos").hasAnyRole("INSTRUCTOR", "ADMIN")
+
+            // .anyRequest().authenticated()
         )
         .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 

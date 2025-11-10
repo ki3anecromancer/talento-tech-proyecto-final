@@ -8,6 +8,7 @@ import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,10 +36,13 @@ public class CursoModulosController {
   // Crear modulo en curso
   @PostMapping
   public ResponseEntity<ModuloResponseDTO> crearModuloEnCurso(
-      @Valid @RequestBody ModuloCreateRequestDTO requestDto) {
+      @Valid @RequestBody ModuloCreateRequestDTO requestDto,
+      @AuthenticationPrincipal String idUsuarioString) {
+
+    Long idUsuario = Long.parseLong(idUsuarioString);
 
     return ResponseEntity
         .status(HttpStatus.CREATED)
-        .body(moduloService.crearModuloEnCurso(requestDto));
+        .body(moduloService.crearModuloEnCurso(idUsuario, requestDto));
   }
 }

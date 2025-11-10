@@ -8,7 +8,7 @@ import java.util.Set;
 public interface ContenidoService {
 
   // Crear contenido en modulo
-  ContenidoResponseDTO crearContenidoEnModulo(ContenidoCreateRequestDTO createDto);
+  ContenidoResponseDTO crearContenidoEnModulo(Long idUsuario, ContenidoCreateRequestDTO createDto);
 
   // Obtener contenido por ID
   ContenidoResponseDTO obtenerContenidoPorId(Long id);

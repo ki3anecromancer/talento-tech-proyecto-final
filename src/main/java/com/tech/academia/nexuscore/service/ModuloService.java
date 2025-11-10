@@ -14,7 +14,7 @@ public interface ModuloService {
   ModuloResponseDTO obtenerModuloPorId(Long id);
 
   // Crear modulo en curso
-  ModuloResponseDTO crearModuloEnCurso(ModuloCreateRequestDTO requestDto);
+  ModuloResponseDTO crearModuloEnCurso(Long idUsuario, ModuloCreateRequestDTO requestDto);
 
   // Actualizar modulo
   ModuloResponseDTO actualizarModulo(Long id, ModuloUpdateRequestDTO updateDto);
