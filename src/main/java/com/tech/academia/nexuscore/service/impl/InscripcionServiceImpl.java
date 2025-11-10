@@ -2,6 +2,7 @@ package com.tech.academia.nexuscore.service.impl;
 
 import com.tech.academia.nexuscore.dto.InscripcionCursosResponseDTO;
 import com.tech.academia.nexuscore.dto.InscripcionResponseDTO;
+import com.tech.academia.nexuscore.dto.InscripcionUsuarioResponseDTO;
 import com.tech.academia.nexuscore.exception.CursoNoEncontradoException;
 import com.tech.academia.nexuscore.exception.InscripcionNoEncontradaException;
 import com.tech.academia.nexuscore.exception.ProgresoContenidoNoEncontradoException;
@@ -21,8 +22,11 @@ import com.tech.academia.nexuscore.repository.InscripcionRepository;
 import com.tech.academia.nexuscore.repository.ProgresoContenidoRepository;
 import com.tech.academia.nexuscore.repository.UsuarioRepository;
 import com.tech.academia.nexuscore.service.InscripcionService;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -164,5 +168,25 @@ public class InscripcionServiceImpl implements InscripcionService {
         new InscripcionNoEncontradaException(id));
 
     inscripcionRepository.delete(inscripcion);
+  }
+
+  // Obtener usuarios inscritos a un curso
+  @Override
+  public Set<InscripcionUsuarioResponseDTO> obtenerUsuariosInscriptosACurso(Long idCurso) {
+
+    if (!cursoRepository.existsById(idCurso)) {
+      throw new CursoNoEncontradoException(idCurso);
+    }
+
+    Set<Inscripcion> inscripciones = inscripcionRepository.findByCursoIdWithUsuario(idCurso);
+
+    return inscripciones.stream()
+        .map(inscripcion -> new InscripcionUsuarioResponseDTO(
+            inscripcion.getUsuario().getId(),
+          inscripcion.getUsuario().getNombreUsuario(),
+          inscripcion.getFechaInscripcion(),
+          inscripcion.getProgreso()
+        ))
+        .collect(Collectors.toSet());
   }
 }

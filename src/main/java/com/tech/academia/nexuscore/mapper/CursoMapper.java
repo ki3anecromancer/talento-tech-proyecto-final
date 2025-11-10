@@ -47,7 +47,8 @@ public class CursoMapper {
         curso.getDuracionHoras(),
         curso.getPrecio(),
         modulosDto,
-        curso.getUsuario().getId()
+        curso.getUsuario().getId(),
+        curso.getUsuario().getNombreUsuario()
     );
   }
 

@@ -1,8 +1,10 @@
 package com.tech.academia.nexuscore.controller;
 
 import com.tech.academia.nexuscore.dto.InscripcionResponseDTO;
+import com.tech.academia.nexuscore.dto.InscripcionUsuarioResponseDTO;
 import com.tech.academia.nexuscore.security.userdetails.UsuarioDetails;
 import com.tech.academia.nexuscore.service.InscripcionService;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +34,16 @@ public class CursoInscripcionesController {
         .body(inscripcionService.inscribirUsuarioACurso(
             usuarioDetails.getId(),
             idCurso));
+  }
+
+  // Obtener usuarios inscritos a un curso
+  @GetMapping("/cursos/{idCurso}/inscripciones")
+  public ResponseEntity<Set<InscripcionUsuarioResponseDTO>> obtenerUsuariosInscriptosACurso(
+      @PathVariable Long idCurso) {
+
+    return ResponseEntity
+        .status(HttpStatus.OK)
+        .body(inscripcionService.obtenerUsuariosInscriptosACurso(idCurso));
   }
 
   // Obtener inscripcion por ID

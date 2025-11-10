@@ -64,6 +64,7 @@ public class WebSecurityConfig {
             .requestMatchers(HttpMethod.DELETE, "/api/usuarios/me").hasAnyRole("USER", "INSTRUCTOR", "ADMIN")
             .requestMatchers(HttpMethod.PATCH, "/api/usuarios/me").hasAnyRole("USER", "INSTRUCTOR", "ADMIN")
 
+            .requestMatchers(HttpMethod.GET, "/api/cursos/{idCurso}/inscripciones").hasAnyRole("INSTRUCTOR", "ADMIN")
             .requestMatchers(HttpMethod.POST, "/api/cursos/{idCurso}/modulos").hasAnyRole("INSTRUCTOR", "ADMIN")
 
             // .anyRequest().authenticated()

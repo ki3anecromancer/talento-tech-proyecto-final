@@ -1,5 +1,6 @@
 package com.tech.academia.nexuscore.controller;
 
+import com.tech.academia.nexuscore.dto.InscripcionUsuarioResponseDTO;
 import com.tech.academia.nexuscore.dto.ModuloCreateRequestDTO;
 import com.tech.academia.nexuscore.dto.ModuloResponseDTO;
 import com.tech.academia.nexuscore.service.ModuloService;
@@ -33,6 +34,10 @@ public class CursoModulosController {
         .body(moduloService.obtenerModulosPorcurso(idCurso));
   }
 
+  // ========================================================
+  //                SECURITY CONTROLLER
+  // ========================================================
+
   // Crear modulo en curso
   @PostMapping
   public ResponseEntity<ModuloResponseDTO> crearModuloEnCurso(
@@ -45,4 +50,6 @@ public class CursoModulosController {
         .status(HttpStatus.CREATED)
         .body(moduloService.crearModuloEnCurso(idUsuario, requestDto));
   }
+
+
 }

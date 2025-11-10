@@ -2,6 +2,8 @@ package com.tech.academia.nexuscore.service;
 
 import com.tech.academia.nexuscore.dto.InscripcionCursosResponseDTO;
 import com.tech.academia.nexuscore.dto.InscripcionResponseDTO;
+import com.tech.academia.nexuscore.dto.InscripcionUsuarioResponseDTO;
+import java.util.Set;
 
 public interface InscripcionService {
 
@@ -19,4 +21,7 @@ public interface InscripcionService {
 
   // Eliminar inscripcion
   void eliminarInscripcion(Long id);
+
+  // Obtener usuarios inscritos a un curso
+  Set<InscripcionUsuarioResponseDTO> obtenerUsuariosInscriptosACurso(Long idCurso);
 }
