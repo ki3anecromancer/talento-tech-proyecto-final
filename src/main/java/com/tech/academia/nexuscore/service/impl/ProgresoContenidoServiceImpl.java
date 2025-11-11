@@ -16,6 +16,7 @@ import com.tech.academia.nexuscore.service.ProgresoContenidoService;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -28,6 +29,7 @@ public class ProgresoContenidoServiceImpl implements ProgresoContenidoService {
 
   // Marcar contenido como completado
   @Override
+  @Transactional
   public ProgresoContenidoResponseDTO marcarContenidoComoCompletado(Long idUsuario, Long idContenido) {
 
     Usuario usuario = usuarioRepository.findById(idUsuario).orElseThrow(() ->

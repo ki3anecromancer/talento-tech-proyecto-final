@@ -29,6 +29,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -44,6 +45,7 @@ public class InscripcionServiceImpl implements InscripcionService {
 
   // Inscribir usuario a un curso
   @Override
+  @Transactional
   public InscripcionResponseDTO inscribirUsuarioACurso(Long idUsuario, Long idCurso) {
 
     Usuario usuario = usuarioRepository.findById(idUsuario).orElseThrow(() ->
@@ -105,6 +107,7 @@ public class InscripcionServiceImpl implements InscripcionService {
 
   // Obtener los cursos inscritos de usuario
   @Override
+  @Transactional(readOnly = true)
   public InscripcionCursosResponseDTO obtenerCursosInscritosDeUsuario(Long idUsuario) {
 
     Usuario usuario = usuarioRepository.findById(idUsuario).orElseThrow(() ->
@@ -120,6 +123,7 @@ public class InscripcionServiceImpl implements InscripcionService {
 
   // Actualizar progreso
   @Override
+  @Transactional
   public InscripcionResponseDTO actualizarProgreso(Long idUsuario, Long idCurso) {
 
     Usuario usuario = usuarioRepository.findById(idUsuario).orElseThrow(() ->
@@ -162,6 +166,7 @@ public class InscripcionServiceImpl implements InscripcionService {
 
   // Eliminar inscripcion
   @Override
+  @Transactional
   public void eliminarInscripcion(Long id) {
 
     Inscripcion inscripcion = inscripcionRepository.findById(id).orElseThrow(() ->

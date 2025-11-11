@@ -15,6 +15,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -45,6 +46,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 
   // Crear usuario
   @Override
+  @Transactional
   public UsuarioResponseDTO crearUsuario(UsuarioCreateRequestDTO requestDTO) {
 
     if (usuarioRepository.existsByNombreUsuario(requestDTO.nombreUsuario())) {
@@ -68,6 +70,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 
   // Actualizar usuario (sin contraseña)
   @Override
+  @Transactional
   public UsuarioResponseDTO actualizarUsuario(Long id, UsuarioUpdateRequestDTO requestDTO) {
 
     Usuario usuario = usuarioRepository.findById(id).orElseThrow(() ->
@@ -94,6 +97,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 
   // Actualizar contraseña
   @Override
+  @Transactional
   public UsuarioResponseDTO actualizarContrasena(Long id, UsuarioUpdateContrasenaDTO contrasenaDTO) {
 
     Usuario usuario = usuarioRepository.findById(id).orElseThrow(() ->
@@ -110,6 +114,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 
   // Eliminar usuario
   @Override
+  @Transactional
   public void eliminarUsuario(Long id) {
 
     if (!usuarioRepository.existsById(id)) {

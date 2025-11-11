@@ -77,6 +77,7 @@ public class CursoServiceImpl implements CursoService {
 
   // Actualizar curso
   @Override
+  @Transactional
   public CursoResponseDTO actualizarCurso(Long idCurso, Long idUsuario, CursoUpdateRequestDTO updateDto) {
 
     Curso curso = cursoRepository.findById(idCurso).orElseThrow(() ->
@@ -101,6 +102,7 @@ public class CursoServiceImpl implements CursoService {
 
   // Eliminar curso
   @Override
+  @Transactional
   public void eliminarCurso(Long idCurso, Long idUsuario) {
 
     Curso curso = cursoRepository.findById(idCurso).orElseThrow(() ->

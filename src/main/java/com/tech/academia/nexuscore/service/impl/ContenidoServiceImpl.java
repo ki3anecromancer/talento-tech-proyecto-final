@@ -23,6 +23,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -36,6 +37,7 @@ public class ContenidoServiceImpl implements ContenidoService {
 
   // Crear contenido en modulo
   @Override
+  @Transactional
   public ContenidoResponseDTO crearContenidoEnModulo(Long idUsuario, ContenidoCreateRequestDTO createDto) {
 
     Modulo modulo = moduloRepository.findById(createDto.idModulo()).orElseThrow(() ->
@@ -58,7 +60,6 @@ public class ContenidoServiceImpl implements ContenidoService {
     Contenido guardado = contenidoRepository.save(contenido);
 
     modulo.getContenidos().add(guardado);
-    moduloRepository.save(modulo);
 
     return contenidoMapper.contenidoToResponseDto(guardado);
   }
@@ -75,6 +76,7 @@ public class ContenidoServiceImpl implements ContenidoService {
 
   // Actualizar contenido
   @Override
+  @Transactional
   public ContenidoResponseDTO actualizarContenido(Long id, ContenidoUpdateRequestDTO updateDto) {
 
     Contenido contenido = contenidoRepository.findById(id).orElseThrow(() ->
@@ -91,6 +93,7 @@ public class ContenidoServiceImpl implements ContenidoService {
 
   // Obtener contenidos por modulo
   @Override
+  @Transactional(readOnly = true)
   public Set<ContenidoResponseDTO> obtenerContenidosPorModulo(Long idModulo) {
 
     Modulo modulo = moduloRepository.findById(idModulo).orElseThrow(() ->
@@ -103,6 +106,7 @@ public class ContenidoServiceImpl implements ContenidoService {
 
   // Eliminar contenido
   @Override
+  @Transactional
   public void eliminarContenido(Long id) {
 
     Contenido contenido = contenidoRepository.findById(id).orElseThrow(() ->

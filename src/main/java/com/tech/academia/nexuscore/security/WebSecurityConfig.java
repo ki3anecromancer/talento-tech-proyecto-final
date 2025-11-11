@@ -51,21 +51,39 @@ public class WebSecurityConfig {
 
         .authorizeHttpRequests(authorize -> authorize
             .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+            // Crear usuario -> crearUsuario
+            // Loguear usuario -> authenticateUser
             .requestMatchers("/api/auth/**").permitAll()
 
+            // Crear curso -> crearCursoLogueado
             .requestMatchers(HttpMethod.POST, "/api/cursos").hasAnyRole("USER", "INSTRUCTOR", "ADMIN")
+            // Obtener cursos por usuario -> obtenerCursosPorUsuario
             .requestMatchers(HttpMethod.GET, "/api/cursos/me").hasAnyRole("USER", "INSTRUCTOR", "ADMIN")
 
+            // Obtener curso por ID -> obtenerCursoPorId
             .requestMatchers(HttpMethod.GET, "/api/cursos/{id}").hasAnyRole("USER", "INSTRUCTOR", "ADMIN")
+            // Actualizar curso -> actualizarCurso
             .requestMatchers(HttpMethod.PUT, "/api/cursos/{idCurso}").hasAnyRole("INSTRUCTOR", "ADMIN")
+            // Eliminar curso -> eliminarCurso
             .requestMatchers(HttpMethod.DELETE, "/api/cursos/{idCurso}").hasAnyRole("INSTRUCTOR", "ADMIN")
 
+            // Obtener perfil logueado logueado -> obtenerPerfilLogueado
             .requestMatchers(HttpMethod.GET, "/api/usuarios/me").hasAnyRole("USER", "INSTRUCTOR", "ADMIN")
+            // Eliminar usuario logueado -> eliminarUsuarioLogueado
             .requestMatchers(HttpMethod.DELETE, "/api/usuarios/me").hasAnyRole("USER", "INSTRUCTOR", "ADMIN")
+            // Actualizar usuario logueado (sin contraseña) -> actualizarPerfilLogueado
+            .requestMatchers(HttpMethod.PUT, "/api/usuarios/me").hasAnyRole("USER", "INSTRUCTOR", "ADMIN")
+            // Actualizar contraseña logueado -> actualizarContrasenaLogueado
             .requestMatchers(HttpMethod.PATCH, "/api/usuarios/me").hasAnyRole("USER", "INSTRUCTOR", "ADMIN")
 
+            // Obtener usuarios inscritos a un curso -> obtenerUsuariosInscriptosACurso
             .requestMatchers(HttpMethod.GET, "/api/cursos/{idCurso}/inscripciones").hasAnyRole("INSTRUCTOR", "ADMIN")
+            // Crear modulo en curso -> crearModuloEnCurso
             .requestMatchers(HttpMethod.POST, "/api/cursos/{idCurso}/modulos").hasAnyRole("INSTRUCTOR", "ADMIN")
+            // Actualizar modulo -> actualizarModulo
+            .requestMatchers(HttpMethod.PUT, "/api/modulos/{idModulo}").hasAnyRole("INSTRUCTOR", "ADMIN")
+            // Eliminar modulo -> eliminarModulo
+            .requestMatchers(HttpMethod.DELETE, "/api/modulos/{idModulo}").hasAnyRole("INSTRUCTOR", "ADMIN")
 
             // .anyRequest().authenticated()
         )

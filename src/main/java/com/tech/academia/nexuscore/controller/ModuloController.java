@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,21 +33,33 @@ public class ModuloController {
         .body(moduloService.obtenerModuloPorId(id));
   }
 
+  // ========================================================
+  //                SECURITY CONTROLLER
+  // ========================================================
+
   // Actualizar modulo
-  @PutMapping("/{id}")
+  @PutMapping("/{idModulo}")
   public ResponseEntity<ModuloResponseDTO> actualizarModulo(
-      @PathVariable Long id,
+      @PathVariable Long idModulo,
+      @AuthenticationPrincipal String idUsuarioString,
       @Valid @RequestBody ModuloUpdateRequestDTO updateDto) {
+
+    Long idUsuario = Long.parseLong(idUsuarioString);
 
     return ResponseEntity
         .status(HttpStatus.OK)
-        .body(moduloService.actualizarModulo(id, updateDto));
+        .body(moduloService.actualizarModulo(idModulo, idUsuario, updateDto));
   }
 
   // Eliminar modulo
-  @DeleteMapping("/{id}")
+  @DeleteMapping("/{idModulo}")
   public ResponseEntity<Void> eliminarModulo(
-      @PathVariable Long id) {
+      @PathVariable Long idModulo,
+      @AuthenticationPrincipal String idUsuarioString) {
+
+    Long idUsuario = Long.parseLong(idUsuarioString);
+
+    moduloService.eliminarModulo(idModulo, idUsuario);
 
     return ResponseEntity.noContent().build();
   }

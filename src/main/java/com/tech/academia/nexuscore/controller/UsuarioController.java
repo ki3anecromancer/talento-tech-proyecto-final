@@ -82,7 +82,7 @@ public class UsuarioController {
   //                SECURITY CONTROLLER
   // ========================================================
 
-  // Obtener perfil logueado logueado
+  // Obtener perfil logueado
   @GetMapping("/me")
   public ResponseEntity<UsuarioResponseDTO> obtenerPerfilLogueado(
       @AuthenticationPrincipal String idUsuarioString) {

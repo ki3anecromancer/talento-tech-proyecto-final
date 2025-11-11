@@ -17,8 +17,8 @@ public interface ModuloService {
   ModuloResponseDTO crearModuloEnCurso(Long idUsuario, ModuloCreateRequestDTO requestDto);
 
   // Actualizar modulo
-  ModuloResponseDTO actualizarModulo(Long id, ModuloUpdateRequestDTO updateDto);
+  ModuloResponseDTO actualizarModulo(Long idModulo, Long idUsuario, ModuloUpdateRequestDTO updateDto);
 
   // Eliminar modulo
-  void eliminarModulo(Long id);
+  void eliminarModulo(Long idModuelo, Long idUsuario);
 }

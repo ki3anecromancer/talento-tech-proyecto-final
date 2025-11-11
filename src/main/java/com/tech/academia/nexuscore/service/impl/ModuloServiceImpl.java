@@ -33,6 +33,7 @@ public class ModuloServiceImpl implements ModuloService {
 
   // Obtener modulos por curso
   @Override
+  @Transactional(readOnly = true)
   public Set<ModuloResponseDTO> obtenerModulosPorcurso(Long idCurso) {
 
     Curso curso = cursoRepository.findById(idCurso).orElseThrow(() ->
@@ -82,10 +83,21 @@ public class ModuloServiceImpl implements ModuloService {
 
   // Actualizar modulo
   @Override
-  public ModuloResponseDTO actualizarModulo(Long id, ModuloUpdateRequestDTO updateDto) {
+  @Transactional
+  public ModuloResponseDTO actualizarModulo(Long idModulo, Long idUsuario, ModuloUpdateRequestDTO updateDto) {
 
-    Modulo modulo = moduloRepository.findById(id).orElseThrow(() ->
-        new ModuloNoEncontradoException(id));
+    Modulo modulo = moduloRepository.findById(idModulo).orElseThrow(() ->
+        new ModuloNoEncontradoException(idModulo));
+
+    Usuario usuario = usuarioRepository.findById(idUsuario).orElseThrow(() ->
+        new UsuarioNoEncontradoException(idUsuario));
+
+    boolean esAdmin = usuario.getRoles().contains(Rol.ADMIN);
+    boolean esPropietario = modulo.getCurso().getUsuario().getId().equals(idUsuario);
+
+    if (!esAdmin && !esPropietario) {
+      throw new AccesoDenegadoException();
+    }
 
     moduloMapper.actualizarModulo(modulo, updateDto);
 
@@ -96,12 +108,22 @@ public class ModuloServiceImpl implements ModuloService {
 
   // Eliminar modulo
   @Override
-  public void eliminarModulo(Long id) {
+  @Transactional
+  public void eliminarModulo(Long idModuelo, Long idUsuario) {
 
-    Modulo modulo = moduloRepository.findById(id).orElseThrow(() ->
-        new ModuloNoEncontradoException(id));
+    Modulo modulo = moduloRepository.findById(idModuelo).orElseThrow(() ->
+        new ModuloNoEncontradoException(idModuelo));
+
+    Usuario usuario = usuarioRepository.findById(idUsuario).orElseThrow(() ->
+        new UsuarioNoEncontradoException(idUsuario));
+
+    boolean esAdmin = usuario.getRoles().contains(Rol.ADMIN);
+    boolean esPropietario = modulo.getCurso().getUsuario().getId().equals(idUsuario);
+
+    if (!esAdmin && !esPropietario) {
+      throw new AccesoDenegadoException();
+    }
 
     moduloRepository.delete(modulo);
   }
-
 }
