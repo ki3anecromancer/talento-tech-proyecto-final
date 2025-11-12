@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/contenidos")
+@RequestMapping("/api/contenidos")
 public class ContenidoController {
 
   private final ContenidoService contenidoService;
@@ -33,22 +34,28 @@ public class ContenidoController {
   }
 
   // Actualizar contenido
-  @PutMapping("/{id}")
+  @PutMapping("/{idContenido}")
   public ResponseEntity<ContenidoResponseDTO> actualizarContenido(
-      @PathVariable Long id,
-      @Valid @RequestBody ContenidoUpdateRequestDTO updateDto) {
+      @PathVariable Long idContenido,
+      @Valid @RequestBody ContenidoUpdateRequestDTO updateDto,
+      @AuthenticationPrincipal String idUsuarioString) {
+
+    Long idUsuario = Long.parseLong(idUsuarioString);
 
     return ResponseEntity
         .status(HttpStatus.OK)
-        .body(contenidoService.actualizarContenido(id, updateDto));
+        .body(contenidoService.actualizarContenido(idContenido, idUsuario, updateDto));
   }
 
   // Eliminar contenido
-  @DeleteMapping("/{id}")
+  @DeleteMapping("/{idContenido}")
   public ResponseEntity<Void> eliminarContenido(
-      @PathVariable Long id) {
+      @PathVariable Long idContenido,
+      @AuthenticationPrincipal String idUsuarioString) {
 
-    contenidoService.eliminarContenido(id);
+    Long idUsuario = Long.parseLong(idUsuarioString);
+
+    contenidoService.eliminarContenido(idContenido, idUsuario);
 
     return ResponseEntity.noContent().build();
   }

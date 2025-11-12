@@ -77,10 +77,20 @@ public class ContenidoServiceImpl implements ContenidoService {
   // Actualizar contenido
   @Override
   @Transactional
-  public ContenidoResponseDTO actualizarContenido(Long id, ContenidoUpdateRequestDTO updateDto) {
+  public ContenidoResponseDTO actualizarContenido(Long idContenido, Long idUsuario, ContenidoUpdateRequestDTO updateDto) {
 
-    Contenido contenido = contenidoRepository.findById(id).orElseThrow(() ->
-        new ContenidoNoEncontradoException(id));
+    Contenido contenido = contenidoRepository.findById(idContenido).orElseThrow(() ->
+        new ContenidoNoEncontradoException(idContenido));
+
+    Usuario usuario = usuarioRepository.findById(idUsuario).orElseThrow(() ->
+        new UsuarioNoEncontradoException(idUsuario));
+
+    boolean esAdmin = usuario.getRoles().contains(Rol.ADMIN);
+    boolean esPropietario = contenido.getModulo().getCurso().getUsuario().getId().equals(idUsuario);
+
+    if (!esAdmin && !esPropietario) {
+      throw new AccesoDenegadoException();
+    }
 
     contenidoMapper.actualizarContenido(contenido, updateDto);
 
@@ -107,10 +117,20 @@ public class ContenidoServiceImpl implements ContenidoService {
   // Eliminar contenido
   @Override
   @Transactional
-  public void eliminarContenido(Long id) {
+  public void eliminarContenido(Long idContenido, Long idUsuario) {
 
-    Contenido contenido = contenidoRepository.findById(id).orElseThrow(() ->
-        new ContenidoNoEncontradoException(id));
+    Contenido contenido = contenidoRepository.findById(idContenido).orElseThrow(() ->
+        new ContenidoNoEncontradoException(idContenido));
+
+    Usuario usuario = usuarioRepository.findById(idUsuario).orElseThrow(() ->
+        new UsuarioNoEncontradoException(idUsuario));
+
+    boolean esAdmin = usuario.getRoles().contains(Rol.ADMIN);
+    boolean esPropietario = contenido.getModulo().getCurso().getUsuario().getId().equals(idUsuario);
+
+    if (!esAdmin && !esPropietario) {
+      throw new AccesoDenegadoException();
+    }
 
     contenidoRepository.delete(contenido);
   }

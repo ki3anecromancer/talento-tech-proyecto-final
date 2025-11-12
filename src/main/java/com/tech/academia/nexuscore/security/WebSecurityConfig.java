@@ -85,6 +85,16 @@ public class WebSecurityConfig {
             // Eliminar modulo -> eliminarModulo
             .requestMatchers(HttpMethod.DELETE, "/api/modulos/{idModulo}").hasAnyRole("INSTRUCTOR", "ADMIN")
 
+            // Crear contenido en modulo -> crearContenidoEnModulo
+            .requestMatchers(HttpMethod.POST, "/api/modulos/{idModulo}/contenidos").hasAnyRole("INSTRUCTOR", "ADMIN")
+            // Obtener contenidos por modulo -> obtenerContenidosPorModulo
+            .requestMatchers(HttpMethod.GET, "/api/modulos/{idModulo}/contenidos").hasAnyRole("USER", "INSTRUCTOR", "ADMIN")
+            // Actualizar contenido -> actualizarContenido
+            .requestMatchers(HttpMethod.PUT, "/api/contenidos/{idContenido}").hasAnyRole("INSTRUCTOR", "ADMIN")
+            // Eliminar contenido -> eliminarContenido
+            .requestMatchers(HttpMethod.DELETE, "/api/contenidos/{idContenido}").hasAnyRole("INSTRUCTOR", "ADMIN")
+
+
             // .anyRequest().authenticated()
         )
         .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

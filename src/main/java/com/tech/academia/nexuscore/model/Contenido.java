@@ -47,7 +47,7 @@ public class Contenido {
   private String titulo;
 
   @Enumerated(EnumType.STRING)
-  @Column(nullable = false)
+  @Column(length = 50, nullable = false)
   private TipoContenido tipo;
 
   @Column(name = "url_archivo")

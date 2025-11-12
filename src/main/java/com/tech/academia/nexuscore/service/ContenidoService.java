@@ -14,11 +14,11 @@ public interface ContenidoService {
   ContenidoResponseDTO obtenerContenidoPorId(Long id);
 
   // Actualizar contenido
-  ContenidoResponseDTO actualizarContenido(Long id, ContenidoUpdateRequestDTO updateDto);
+  ContenidoResponseDTO actualizarContenido(Long idContenido, Long idUsuario, ContenidoUpdateRequestDTO updateDto);
 
   // Obtener contenidos por modulo
   Set<ContenidoResponseDTO> obtenerContenidosPorModulo(Long idModulo);
 
   // Eliminar contenido
-  void eliminarContenido(Long id);
+  void eliminarContenido(Long idContenido, Long idUsuario);
 }
